@@ -1,0 +1,13 @@
+a.link-active {
+	@apply text-white bg-gray-500;
+}
+
+.resizer-r {
+	cursor: col-resize;
+	height: 100%;
+	right: -7px;
+	top: 0;
+	width: 7px;
+	position: absolute;
+	
+}
