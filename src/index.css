@@ -17,13 +17,14 @@ div#root {
 
 /* width */
 ::-webkit-scrollbar {
-	height: 7px;
-	width: 7px;
+	width: 5px;
+	
 }
+
 
 /* Track */
 ::-webkit-scrollbar-track-piece {
-	background: #f5f5f5;
+	background: rgba(0, 0, 0, 0);
 	border-radius: 10px;
 }
 

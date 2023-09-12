@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 
-const ChatOption: React.FC = () => {
+const Resizable: React.FC<{children: ReactNode}> = ({children}) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const refRight = useRef<HTMLDivElement>(null);
 
@@ -22,11 +22,11 @@ const ChatOption: React.FC = () => {
                 const dx = e.clientX - x;
                 x = e.clientX;
                 width = width + dx;
-                if(width >= 512){
-                    width = 512
+                if(width >= 500){
+                    width = 500
                 }
-                if(width <= 200){
-                    width = 200
+                if(width <= 270){
+                    width = 270
                 }
                 resizableElement.style.width = `${width}px`
             }
@@ -51,12 +51,12 @@ const ChatOption: React.FC = () => {
 
 	return (
 		<>
-			<div ref={ref} className='md:max-w-lg md:min-w-[200px] overflow-auto'>
-				ChatOption
-				<div ref={refRight} className='resizer-r'></div>
+			<div ref={ref} className='md:max-w-[500px] md:min-w-[270px] flex flex-col relative h-full bg-white border-gray-500 border-opacity-40 border-r-[1px]'>
+				{children}
+                <div ref={refRight} className='resizer-r'></div>
 			</div>
 		</>
 	);
 };
 
-export default ChatOption;
+export default Resizable;

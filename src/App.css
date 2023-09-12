@@ -1,13 +1,35 @@
 a.link-active {
-	@apply text-white bg-gray-500;
+	@apply text-black bg-gray-400 bg-opacity-50;
+}
+
+.bg-fancy {
+	background: linear-gradient(
+		to bottom,
+		rgb(254, 202, 202),
+		rgb(252, 165, 165),
+		rgb(254, 240, 138)
+	);
+}
+
+.icon-purple {
+	color: rgba(170, 0, 255, 0.8);
+}
+
+.icon-button {
+	@apply p-1 text-2xl text-blue-500 hover:text-blue-800;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
 }
 
 .resizer-r {
 	cursor: col-resize;
-	height: 100%;
+	background-color: transparent;
+	height: 95%;
+	z-index: 50;
 	right: -7px;
-	top: 0;
+	bottom: 0;
 	width: 7px;
 	position: absolute;
-	
 }
