@@ -3,36 +3,36 @@ import { Input } from 'antd';
 import { BiSolidPlusCircle } from 'react-icons/bi';
 import { PiSmileyFill, PiStickerFill } from 'react-icons/pi';
 import { HiThumbUp } from 'react-icons/hi';
+import IconButton from '../IconButton';
 
 const { TextArea } = Input;
 
 const ChatboxInputField: React.FC = () => {
 	return (
-		<div className='flex items-center gap-3 px-3 py-2'>
-			<span className='icon-button'>
+		<div className='flex items-center gap-3 px-3 py-2 icon-blue'>
+			<IconButton tooltipTitle='Add Media'>
 				<BiSolidPlusCircle />
-			</span>
+			</IconButton>
 
 			<div className='flex items-center justify-between flex-auto gap-2 px-2 py-1 bg-gray-200 bg-opacity-50 rounded-3xl'>
 				<TextArea
-					className='scrollbar-none'
+					className='placeholder-gray-400 placeholder-medium scrollbar-none '
 					bordered={false}
 					placeholder='Type a message...'
 					autoSize={{ minRows: 1, maxRows: 9 }}
 				/>
 				<div className='flex gap-1'>
-					<span className='icon-button'>
+					<IconButton tooltipTitle='Send a Sticker'>
 						<PiStickerFill />
-					</span>
-					<span className='icon-button'>
+					</IconButton>
+					<IconButton tooltipTitle='Send an Emoji'>
 						<PiSmileyFill />
-					</span>
+					</IconButton>
 				</div>
 			</div>
-
-            <span className='icon-button'>
+			<IconButton tooltipTitle='Send a Like'>
 				<HiThumbUp />
-			</span>
+			</IconButton>
 		</div>
 	);
 };

@@ -4,7 +4,7 @@ import SidebarOption from './SidebarOption';
 const Sidebar: React.FC = () => {
 	return (
 		<>
-			<div className='relative flex h-full bg-fancy max-w-1/3'>
+			<div className='relative flex h-full bg-fancy'>
 				<SidebarOption />
 			</div>
 		</>

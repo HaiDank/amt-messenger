@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound';
 import Martket from './pages/Marketplace/Market';
 import Archive from './pages/Archive/Archive';
 import Request from './pages/Request/Request';
+import Test from './pages/Test';
 
 function App() {
 	return (
@@ -18,6 +19,7 @@ function App() {
 					<Route path='requests' element={<Request/>}/>
 					<Route path='*' element={<NotFound/>}/>
 				</Route>
+				<Route path='test' element={<Test/>}/>
 			</Routes>
 		</>
 	);

@@ -15,6 +15,10 @@ a.link-active {
 	color: rgba(170, 0, 255, 0.8);
 }
 
+.placeholder-medium::placeholder{
+	@apply font-medium;
+}
+
 .icon-button {
 	@apply p-1 text-2xl text-blue-500 hover:text-blue-800;
 }
@@ -28,8 +32,43 @@ a.link-active {
 	background-color: transparent;
 	height: 95%;
 	z-index: 50;
-	right: -7px;
+	right: -6px;
 	bottom: 0;
 	width: 7px;
 	position: absolute;
 }
+
+.resizer-b {
+	cursor: col-resize;
+	background-color: transparent;
+	height: 7px;
+	z-index: 50;
+	right: 0;
+	bottom: -6px;
+	width: 100%;
+	position: absolute;
+}
+
+.react-draggable{
+	position: absolute;
+	z-index: 100;
+}
+
+.ant-modal-content{
+	border-radius: 0.25rem !important	;
+}
+
+.ant-popover-inner {
+	padding: 0 !important;
+	
+}
+
+.list-item-separated {
+	@apply w-full py-2;
+	
+}
+
+.list-item-separated:not(:first-child)::before {
+	@apply w-full h-[1px] inline-block bg-gray-300 bg-opacity-40;
+	content: ''; 
+  }

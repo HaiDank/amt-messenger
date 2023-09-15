@@ -11,12 +11,12 @@ type SidebarHeaderPropsType = {
 
 const SidebarHeader: React.FC<SidebarHeaderPropsType> = ({title, functionButton, chatOption, searchFunction}) => {
   return (
-    <div className='flex flex-col mb-2 mt-7'>
-        <div className='flex items-center justify-between mx-3 my-2 text-2xl font-bold'>
+    <div className='flex flex-col gap-2 mb-2 mt-7'>
+        <div className='flex items-center justify-between mx-3 text-2xl font-bold'>
             <span>{title}</span>
             <span>{functionButton}</span>
         </div>
-        <div className='mx-3 my-1'>
+        <div className='mx-3'>
             <Searchbar placeholder='Search (Ctrl+K)' onChange={searchFunction}/>
         </div>
         <div>

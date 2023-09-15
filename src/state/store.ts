@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-
+import chatboxReducer from "./chat/ChatboxSlice";
 
 const store = configureStore({
     reducer:{
-        
+        chatbox: chatboxReducer,
     }
 
 })

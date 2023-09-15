@@ -1,71 +1,42 @@
 import React from 'react';
 import Resizable from '../../components/Resizable';
 import SidebarHeader from '../../components/sidebar/SidebarHeader';
+import ChatboxNavigationItem from '../../components/chatbox/ChatboxNavigationItem';
 
 const Martket: React.FC = () => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
 	return (
 		<div className='flex h-full bg-red-400 '>
-			<Resizable>
+			<Resizable maxWidth={550} minWidth={270}>
 				<SidebarHeader title='Martketplace' searchFunction={onChange} />
-				<div className='overflow-auto bg-green-400'>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-                    <p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-                    <p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
-					<p>asdasd</p>
+
+				<div className='overflow-y-auto'>
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
+					<ChatboxNavigationItem />
 				</div>
+				
 			</Resizable>
-			<div className='relative z-0'>chattttttsssssssssssssssssssssssssssssssssssssssssss</div>
+			
 		</div>
 	);
 };

@@ -1,61 +1,125 @@
 import React, { ReactNode, useEffect, useRef } from 'react';
 
-const Resizable: React.FC<{children: ReactNode}> = ({children}) => {
+type ResizablePropsType = {
+	bottom?: boolean;
+	children: ReactNode;
+	maxWidth: number;
+	minWidth: number;
+	maxHeight?: number;
+	minHeight?: number;
+};
+
+const Resizable: React.FC<ResizablePropsType> = ({
+	children,
+	bottom,
+	maxWidth,
+	maxHeight,
+	minWidth,
+	minHeight,
+}) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const refRight = useRef<HTMLDivElement>(null);
+	const refBottom = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-        if (ref.current != null && refRight.current != null){
-            const resizableElement = ref.current;
-            const style = window.getComputedStyle(resizableElement)
-            let width = parseInt(style.width, 10)
-            let x = 0;
+		if (ref.current != null && refRight.current != null) {
+			const resizableElement = ref.current;
+			const style = window.getComputedStyle(resizableElement);
+			resizableElement.style.width = `${
+				minWidth + (maxWidth - minWidth) / 2
+			}px`;
 
-            const onMouseDown = (e: MouseEvent) => {
-                x = e.clientX;
+			let width = parseInt(style.width, 10);
+			let height = parseInt(style.height, 10);
+			let x = 0;
+			let y = 0;
 
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            }
+			if (minHeight !== undefined && maxHeight !== undefined) {
+				resizableElement.style.height = `${
+					minHeight + (maxHeight - minHeight) / 2
+				}px`;
+			}
 
-            const onMouseMove = (e: MouseEvent) => {
-                const dx = e.clientX - x;
-                x = e.clientX;
-                width = width + dx;
-                if(width >= 500){
-                    width = 500
-                }
-                if(width <= 270){
-                    width = 270
-                }
-                resizableElement.style.width = `${width}px`
-            }
+			const onMouseDownRight = (e: MouseEvent) => {
+				x = e.clientX;
 
-            const onMouseUp = () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-            }
+				document.addEventListener('mousemove', onMouseMoveRight);
+				document.addEventListener('mouseup', onMouseUpRight);
+			};
 
-            const resizer = refRight.current
-            resizer.addEventListener('mousedown', onMouseDown);
+			const onMouseMoveRight = (e: MouseEvent) => {
+				const dx = e.clientX - x;
+				x = e.clientX;
+				width = width + dx;
+				if (width >= maxWidth) {
+					width = maxWidth;
+				}
+				if (width <= minWidth) {
+					width = minWidth;
+				}
+				resizableElement.style.width = `${width}px`;
+			};
 
-            
+			const onMouseUpRight = () => {
+				document.removeEventListener('mousemove', onMouseMoveRight);
+				document.removeEventListener('mouseup', onMouseUpRight);
+			};
 
-            return () => {
-                resizer.removeEventListener('mousedown', onMouseDown);
-            }
-        }
-        
-        
-    }, []);
+			const resizer = refRight.current;
+			resizer.addEventListener('mousedown', onMouseDownRight);
+
+			if (
+				refBottom.current !== null &&
+				minHeight !== undefined &&
+				maxHeight !== undefined
+			) {
+				const onMouseDownBottom = (e: MouseEvent) => {
+					y = e.clientY;
+
+					document.addEventListener('mousemove', onMouseMoveBottom);
+					document.addEventListener('mouseup', onMouseUpBottom);
+				};
+
+				const onMouseMoveBottom = (e: MouseEvent) => {
+					const dy = e.clientY - y;
+					y = e.clientY;
+					height = height + dy;
+					if (height >= maxHeight) {
+						height = maxHeight;
+					}
+					if (height <= minHeight) {
+						height = minHeight;
+					}
+					resizableElement.style.height = `${height}px`;
+				};
+
+				const resizerB = refBottom.current;
+				resizerB.addEventListener('mousedown', onMouseDownBottom);
+
+				const onMouseUpBottom = () => {
+					document.removeEventListener(
+						'mousemove',
+						onMouseMoveBottom
+					);
+					document.removeEventListener('mouseup', onMouseUpBottom);
+				};
+			}
+
+			return () => {
+				resizer.removeEventListener('mousedown', onMouseDownRight);
+			};
+		}
+	}, []);
 
 	return (
-		<>
-			<div ref={ref} className='md:max-w-[500px] md:min-w-[270px] flex flex-col relative h-full bg-white border-gray-500 border-opacity-40 border-r-[1px]'>
-				{children}
-                <div ref={refRight} className='resizer-r'></div>
-			</div>
-		</>
+		<div
+			ref={ref}
+			className={`max-w-[${maxWidth}] min-w-[${minWidth}] max-h-[${maxHeight}] min-h-[${minHeight}] flex flex-col flex-1 relative bg-white resize`}
+		>
+			{children}
+			<div ref={refRight} className='resizer-r'></div>
+			{bottom && <div ref={refBottom} className='resizer-b'></div>}
+		</div>
 	);
 };
 

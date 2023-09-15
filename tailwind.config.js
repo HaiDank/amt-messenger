@@ -6,9 +6,10 @@ export default {
 		'./src/**/**/*.{html,js,tsx,ts}',
 		'./src/*.{html,js,tsx}',
 		'./index.html',
+		'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
 	],
 	theme: {
 		extend: {},
 	},
-	plugins: [],
+	plugins:  [require('flowbite/plugin')],
 };
