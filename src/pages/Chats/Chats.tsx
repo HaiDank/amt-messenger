@@ -3,9 +3,13 @@ import Resizable from '../../components/Resizable';
 import SidebarHeader from '../../components/sidebar/SidebarHeader';
 import { RiEditBoxLine } from 'react-icons/ri';
 import { Button, Tooltip } from 'antd';
-import ChatboxNavigationItem from '../../components/chatbox/ChatboxNavigationItem';
+import MenuItemHeader from '../../components/MenuItemHeader';
+import UserAvatar from '../../components/user/UserAvatar';
+import UserCarousel from '../../components/user/UserCarousel';
 
 const Chats: React.FC = () => {
+	const loop = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
 	return (
@@ -26,7 +30,6 @@ const Chats: React.FC = () => {
 								className='flex items-center justify-center '
 								type='text'
 								shape='circle'
-								size='large'
 								icon={
 									<span className='text-xl font-bold'>
 										<RiEditBoxLine />
@@ -37,27 +40,17 @@ const Chats: React.FC = () => {
 					}
 				/>
 				<div className='overflow-y-auto'>
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
-					<ChatboxNavigationItem />
+					<UserCarousel />
+					{loop.map((index) => (
+						<MenuItemHeader
+							key={index}
+							title="User's name"
+							icon={<UserAvatar online />}
+							description='Vũ Ngọc Hải Đăng: longgggggggg messssssaaaaggggeeeee'
+							descriptionTail='· Thu'
+							suffix={<UserAvatar size={14} />}
+						/>
+					))}
 				</div>
 			</Resizable>
 		</div>
