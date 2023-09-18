@@ -64,11 +64,6 @@ a.link-active {
 }
 
 .list-item-separated {
-	@apply w-full py-2;
+	@apply w-full pt-2 pb-4 border-t border-neutral-300 border-opacity-40;
 	
 }
-
-.list-item-separated:not(:first-child)::before {
-	@apply w-full h-[1px] inline-block bg-gray-300 bg-opacity-40;
-	content: ''; 
-  }

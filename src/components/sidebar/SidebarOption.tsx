@@ -3,7 +3,7 @@ import { Avatar, Button, Popover, Tooltip } from 'antd';
 import SidebarItem from './SidebarItem';
 import useAppRoutes from '../../hooks/useAppRoutes';
 import { BsFillGearFill, BsMessenger } from 'react-icons/bs';
-import SettingModal from '../SettingModal';
+import SettingModal from '../setting/SettingModal';
 
 const SidebarOption: React.FC = () => {
 	const [clicked, setClicked] = useState(false);

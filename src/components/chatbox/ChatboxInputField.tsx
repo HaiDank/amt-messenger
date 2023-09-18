@@ -9,7 +9,7 @@ const { TextArea } = Input;
 
 const ChatboxInputField: React.FC = () => {
 	return (
-		<div className='flex items-center gap-3 px-3 py-2 icon-blue'>
+		<div className='flex items-center gap-3 p-3 icon-blue'>
 			<IconButton tooltipTitle='Add Media'>
 				<BiSolidPlusCircle />
 			</IconButton>

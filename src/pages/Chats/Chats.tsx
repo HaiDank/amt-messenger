@@ -13,7 +13,7 @@ const Chats: React.FC = () => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
 	return (
-		<div className='flex h-full border-gray-400 border-opacity-40 border-r-[1px]'>
+		<div className='flex h-full border-neutral-400 border-opacity-40 border-r-[1px]'>
 			<Resizable maxWidth={550} minWidth={270}>
 				<SidebarHeader
 					title='Chats'
@@ -39,7 +39,7 @@ const Chats: React.FC = () => {
 						</Tooltip>
 					}
 				/>
-				<div className='overflow-y-auto'>
+				<div className='overflow-y-auto overscroll-x-contain'>
 					<UserCarousel />
 					{loop.map((index) => (
 						<MenuItemHeader
