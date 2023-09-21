@@ -28,9 +28,10 @@ const UserCarousel: React.FC = () => {
 			scrollDiv.addEventListener('wheel', (event) => {
 				event.preventDefault();
 				if (event.deltaY > 0) {
-					scrollDiv.scrollLeft += 25;
+					scrollDiv.scrollBy({left: 50 , behavior: 'smooth'})
+					
 				} else {
-					scrollDiv.scrollLeft -= 25;
+					scrollDiv.scrollBy({left: -50, behavior: 'smooth'})
 				}
 				if (scrollDiv.scrollLeft === 0) {
 					setLeftButtonDisabled(true);
@@ -49,9 +50,20 @@ const UserCarousel: React.FC = () => {
 			scrollDiv?.removeEventListener('wheel', (event) => {
 				event.preventDefault();
 				if (event.deltaY > 0) {
-					scrollDiv.scrollLeft += 20;
+					scrollDiv.scrollBy({left: 50 , behavior: 'smooth'})
+					
 				} else {
-					scrollDiv.scrollLeft -= 20;
+					scrollDiv.scrollBy({left: -50, behavior: 'smooth'})
+				}
+				if (scrollDiv.scrollLeft === 0) {
+					setLeftButtonDisabled(true);
+				} else {
+					setLeftButtonDisabled(false);
+				}
+				if (scrollDiv.scrollLeft > 377) {
+					setRightButtonDisabled(true);
+				} else {
+					setRightButtonDisabled(false);
 				}
 			});
 		};

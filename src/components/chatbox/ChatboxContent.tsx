@@ -1,7 +1,8 @@
 import { Avatar } from 'antd';
 import React from 'react';
-import ChatMessage, { MessageType } from './ChatMessage';
-import { messagesData } from '../../dummyData';
+import ChatMessage from './ChatMessage';
+import { MessageType } from '../../state/chat/ChatboxSlice';
+import { useAppSelector } from '../../hooks/useAppRedux';
 
 type ChatboxContentPropsType = {
 	messages: MessageType[];
@@ -9,17 +10,17 @@ type ChatboxContentPropsType = {
 
 const ChatboxContent: React.FC = () => {
 
-	const messages = messagesData; 
+	
+	const chatbox = useAppSelector(state => state.chatbox)
+
+	
+		
+
+	
 
 	return (
-		<div className='relative flex flex-col flex-auto gap-2 px-4 overflow-y-auto'>
-			{messages.map((message, index) => (
-				<ChatMessage  key={index} message={message}/>
-			))}
-			<span className='flex items-center justify-end w-full gap-1'>
-				<Avatar className='flex-shrink-0' size={12}/>
-				<Avatar className='flex-shrink-0' size={12}/>
-			</span>
+		<div >
+			
 		</div>
 	);
 };

@@ -1,25 +1,19 @@
-import { Tooltip } from 'antd';
 import React, { ReactNode } from 'react';
+import MyTooltip from './MyTooltip';
 
 type IconButtonPropsType = {
-    tooltipTitle: string,
-    children: ReactNode
-}
+	tooltipTitle: string;
+	children: ReactNode;
+};
 
-const IconButton: React.FC<IconButtonPropsType> = ({tooltipTitle, children}) => {
+const IconButton: React.FC<IconButtonPropsType> = ({
+	tooltipTitle,
+	children,
+}) => {
 	return (
-		<Tooltip
-			
-			title={tooltipTitle}
-			placement='top'
-			arrow={false}
-			mouseEnterDelay={0.6}
-			mouseLeaveDelay={0}
-		>
-			<button className='text-2xl icon-button'>
-				{children}
-			</button>
-		</Tooltip>
+		<MyTooltip title={tooltipTitle}>
+			<button className='gap-2 p-1 text-2xl text-inherit hover:brightness-75 '>{children}</button>
+		</MyTooltip>
 	);
 };
 

@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useAppSelector } from '../hooks/useAppRedux';
 
 type MenuItemHeaderPropsType = {
 	icon?: ReactNode;
@@ -19,6 +20,9 @@ const MenuItemHeader: React.FC<MenuItemHeaderPropsType> = ({
 	suffix,
 	onClick,
 }) => {
+
+	const theme = useAppSelector(state => state.theme)
+
 	const handleOnClick = () => {
 		if (onClick) {
 			onClick();
@@ -36,18 +40,18 @@ const MenuItemHeader: React.FC<MenuItemHeaderPropsType> = ({
 	return (
 		<div
 			onClick={handleOnClick}
-			className='flex items-center justify-center flex-1 min-w-0 gap-3 p-[10px]'
+			className='flex items-center text-inherit justify-center flex-1 min-w-0 gap-3 p-[10px]'
 		>
 			{icon}
 
 			<div className='flex flex-col justify-center flex-1 min-w-0 gap-1'>
 				<h1
-					className={`p-0 overflow-hidden text-base ${titleStyle} leading-none flex-shrink-1 whitespace-nowrap text-ellipsis`}
+					className={`p-0 overflow-hidden text-inherit text-base ${titleStyle} leading-none flex-shrink-1 whitespace-nowrap text-ellipsis`}
 				>
 					{title}
 				</h1>
-				<div className={`flex gap-2 p-0 ${descriptionStyle} text-gray-500`}>
-					<span className='flex-grow-0 min-w-0 overflow-hidden flex-shrink-1 whitespace-nowrap text-ellipsis '>
+				<div className={`flex gap-2 p-0 ${descriptionStyle} ${theme.textFade} select-none`}>
+					<span className={`flex-grow-0 min-w-0 overflow-hidden flex-shrink-1 whitespace-nowrap text-ellipsis `}>
 						{' '}
 						{description}
 					</span>

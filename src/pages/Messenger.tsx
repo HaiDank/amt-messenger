@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Sidebar from '../components/sidebar/Sidebar';
 import { Outlet, useNavigate } from 'react-router-dom';
-import Chatbox from './Chatbox';
+import Chatbox from '../components/chatbox/Chatbox';
 
 const Messenger: React.FC = () => {
 
