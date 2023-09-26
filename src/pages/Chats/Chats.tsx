@@ -6,10 +6,17 @@ import { Button, Tooltip } from 'antd';
 import MenuItemHeader from '../../components/MenuItemHeader';
 import UserAvatar from '../../components/user/UserAvatar';
 import UserCarousel from '../../components/user/UserCarousel';
+import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
+import { updateChosenChatbox } from '../../state/chat/ChatboxSlice';
 
 const Chats: React.FC = () => {
-	const loop = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	const chatAppData = useAppSelector(state => state.chatbox);
+	const dispatch = useAppDispatch()
+	const chosenChatboxId = chatAppData.chosenChatboxId;
 
+	const handleChatOptionClick = (id: number) => {
+		dispatch(updateChosenChatbox(id));
+	};
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
 	return (
@@ -41,16 +48,33 @@ const Chats: React.FC = () => {
 				/>
 				<div className='overflow-y-auto overscroll-x-contain'>
 					<UserCarousel />
-					{loop.map((index) => (
-						<MenuItemHeader
-							key={index}
-							title="User's name"
-							icon={<UserAvatar online />}
-							description='Vũ Ngọc Hải Đăng: longgggggggg messssssaaaaggggeeeee'
-							descriptionTail='· Thu'
-							suffix={<UserAvatar size={14} />}
-						/>
-					))}
+					{chatAppData.chatDatas.map((chatbox) => {
+						if (chosenChatboxId === chatbox.chatboxId) {
+							return (
+								<MenuItemHeader
+									key={chatbox.chatboxId}
+									onClick={() => handleChatOptionClick(chatbox.chatboxId)}
+									title="User's name"
+									icon={<UserAvatar online />}
+									description='Vũ Ngọc Hải Đăng: longgggggggg messssssaaaaggggeeeee'
+									descriptionTail='· Thu'
+									active
+									suffix={<UserAvatar size={14} />}
+								/>
+							);
+						}
+						return (
+							<MenuItemHeader
+									key={chatbox.chatboxId}
+									onClick={() => handleChatOptionClick(chatbox.chatboxId)}
+									title="User's name"
+									icon={<UserAvatar online />}
+									description='Vũ Ngọc Hải Đăng: longgggggggg messssssaaaaggggeeeee'
+									descriptionTail='· Thu'
+									suffix={<UserAvatar size={14} />}
+								/>
+						)
+					})}
 				</div>
 			</Resizable>
 		</div>

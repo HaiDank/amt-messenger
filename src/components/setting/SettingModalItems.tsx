@@ -5,8 +5,11 @@ import { IoWarning } from 'react-icons/io5';
 import { GiEarthAsiaOceania } from 'react-icons/gi';
 import {ImKey} from 'react-icons/im'
 import { TbLogout } from 'react-icons/tb';
+import { Switch } from 'antd';
 
 const iconStyle = 'relative text-white w-8 text-center text-lg rounded-full aspect-square flex items-center justify-around'
+
+
 
 export const settingMenuItems = [
 	{
@@ -177,3 +180,57 @@ export const settingMenuItems = [
 		],
 	},
 ];
+
+
+export const settingDisplayItem = [
+	{
+		title: 'General',
+		render: (
+			<>
+			<h1>General</h1>
+				<div className='list-item-separated'>
+					<h2>Join beta testing</h2>
+					<Switch/>
+					<p className=''>Join beta testing to try new features before they're released to everyone.</p>
+				</div>
+				<div className='list-item-separated'>
+					<h2>Join beta testing</h2>
+					<Switch/>
+					<p className=''>Join beta testing to try new features before they're released to everyone.</p>
+				</div>
+				<div className='list-item-separated'>
+					<h2>Join beta testing</h2>
+					<Switch/>
+					<p className=''>Join beta testing to try new features before they're released to everyone.</p>
+				</div>
+			</>
+		)
+	},
+	{
+		title: 'Active Status',
+		render: (
+			<>
+			<h1>General</h1>
+				<div className='list-item-separated'>
+					<h2>Join beta testing</h2>
+					<Switch/>
+					<p className=''>Join beta testing to try new features before they're released to everyone.</p>
+				</div>
+			</>
+		)
+	},
+	{
+		title: 'Notifications',
+		render: (
+			<>
+			<h1>General</h1>
+				<div className='list-item-separated'>
+					<h2>Join beta testing</h2>
+					<Switch/>
+					<p className=''>Join beta testing to try new features before they're released to everyone.</p>
+				</div>
+			</>
+		)
+	},
+
+]

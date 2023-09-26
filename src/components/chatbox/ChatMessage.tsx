@@ -11,16 +11,19 @@ import { BiSolidShare } from 'react-icons/bi';
 type ChatMessagePropsType = {
 	message: MessageType;
 	isGroupChat?: boolean;
+	isSeen?: boolean;
 };
 
 const ChatMessage: React.FC<ChatMessagePropsType> = ({
 	message,
 	isGroupChat,
+	isSeen,
 }) => {
+	const user = useAppSelector((state) => state.user);
 	const ref = useRef<HTMLDivElement>(null);
 	const customTheme = useAppSelector((state) => state.customTheme);
 	const theme = useAppSelector((state) => state.theme);
-	const isUser = message.uid === 1;
+	const isUser = message.uid === user.uid;
 	let chatBubbleStyle = '';
 
 	if (isUser) {
@@ -61,11 +64,6 @@ const ChatMessage: React.FC<ChatMessagePropsType> = ({
 		}
 	}
 
-	const handleOnClick = () => {
-		console.log('top', ref.current?.getBoundingClientRect().top);
-		console.log('height', ref.current?.getBoundingClientRect().bottom);
-	};
-
 	return (
 		<>
 			{message.isDevided && (
@@ -100,44 +98,53 @@ const ChatMessage: React.FC<ChatMessagePropsType> = ({
 					)}
 				>
 					{/* chat bubble and title */}
-					
-						<MyTooltip title={parseDatefromMs(message.timeCreated)}>
-							<p
-								className={clsx(
-									`px-3 py-[6px] rounded-3xl max-w-2/3 ${chatBubbleStyle}`,
-									isUser
-										? `${customTheme.bgMessage} text-white`
-										: `bg-neutral-200 bg-opacity-50 ${theme.textNormal}`
-								)}
-							>
-								{message.text}
-							</p>
-						</MyTooltip>
-					
+
+					<MyTooltip title={parseDatefromMs(message.timeCreated)}>
+						<p
+							className={clsx(
+								`px-3 py-[6px] rounded-3xl max-w-2/3 ${chatBubbleStyle}`,
+								isUser
+									? `${customTheme.bgMessage} text-white`
+									: `bg-neutral-200 bg-opacity-50 ${theme.textNormal}`
+							)}
+						>
+							{message.text}
+						</p>
+					</MyTooltip>
+
 					{/* message actions */}
 
 					<div className='flex flex-col items-center justify-center flex-shrink-0 invisible h-full message-actions'>
-						<ul className='flex gap-1'>
-							<Button
-								className='flex items-center justify-center'
-								type='text'
-								shape='circle'
-								icon={
-									<span className='text-xl text-neutral-500'>
-										<PiSmileyFill />
-									</span>
-								}
-							></Button>
-							<Button
-								className='flex items-center justify-center'
-								type='text'
-								shape='circle'
-								icon={
-									<span className='flex text-xl text-neutral-500'>
-										<BiSolidShare />
-									</span>
-								}
-							></Button>
+						<ul
+							className={clsx(
+								'flex gap-1',
+								isUser && 'flex-row-reverse'
+							)}
+						>
+							<MyTooltip title='Open reaction'>
+								<Button
+									className='flex items-center justify-center bg-neutral-100'
+									type='text'
+									shape='circle'
+									icon={
+										<span className='text-xl text-neutral-400'>
+											<PiSmileyFill />
+										</span>
+									}
+								></Button>
+							</MyTooltip>
+							<MyTooltip title='Reply'>
+								<Button
+									className='flex items-center justify-center bg-neutral-100'
+									type='text'
+									shape='circle'
+									icon={
+										<span className='flex text-xl text-neutral-400'>
+											<BiSolidShare />
+										</span>
+									}
+								></Button>
+							</MyTooltip>
 						</ul>
 					</div>
 
@@ -146,9 +153,11 @@ const ChatMessage: React.FC<ChatMessagePropsType> = ({
 				</div>
 
 				{/* status */}
-				<div className='px-1'>
-					<Avatar size={12} />
-				</div>
+				{isSeen && (
+					<div className='px-1'>
+						<Avatar size={12} />
+					</div>
+				)}
 			</div>
 		</>
 	);

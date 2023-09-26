@@ -1,10 +1,3 @@
-export const usersList = [
-	{
-		name: 'test',
-		avatar: '',
-		online: true,
-	},
-];
 
 export const messagesData = [
 	{

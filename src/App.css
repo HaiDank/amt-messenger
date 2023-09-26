@@ -62,7 +62,7 @@ a.link-active {
 }
 
 .list-item-separated {
-	@apply w-full pt-2 pb-4 border-t border-neutral-300 border-opacity-40;
+	@apply w-full pt-2 pb-4 border-b border-neutral-300 border-opacity-40;
 	
 }
 
@@ -70,4 +70,8 @@ a.link-active {
 
 .message-container:hover > .message-actions {
 	visibility: visible;
+}
+
+.switch {
+	@apply mt-6 mb-3 ;
 }

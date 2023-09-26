@@ -4,11 +4,13 @@ import SidebarItem from './SidebarItem';
 import useAppRoutes from '../../hooks/useAppRoutes';
 import { BsFillGearFill, BsMessenger } from 'react-icons/bs';
 import SettingModal from '../setting/SettingModal';
+import { useAppSelector } from '../../hooks/useAppRedux';
 
 const SidebarOption: React.FC = () => {
 	const [clicked, setClicked] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
 	const routes = useAppRoutes();
+	const user = useAppSelector(state => state.user)
 
 	const handlePreferenceClick = () => {
 		setOpenModal(true);
@@ -68,7 +70,7 @@ const SidebarOption: React.FC = () => {
 					>
 						<div className='p-2 m-1'>
 							<Avatar
-								src='./src/assets/admin-avatar.png'
+								src={user.avatarURL}
 								size='large'
 							/>
 						</div>

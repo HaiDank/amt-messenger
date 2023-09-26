@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ChatboxHeader from './ChatboxHeader';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
-import { addMessage, updateChatBubbleOrder } from '../../state/chat/ChatboxSlice';
+import { addMessage, saveChatDatas, selectChatbox, updateChatBubbleOrder } from '../../state/chat/ChatboxSlice';
 import { BiSolidPlusCircle } from 'react-icons/bi';
 import IconButton from '../IconButton';
 import { Input } from 'antd';
@@ -14,16 +14,17 @@ const { TextArea } = Input;
 const Chatbox: React.FC = () => {
 	const theme = useAppSelector((state) => state.theme);
 	const customTheme = useAppSelector((state) => state.customTheme);
+	const user = useAppSelector((state) => state.user)
 
 	const autoScrollElement = useRef<HTMLDivElement>(null);
-	const chatbox = useAppSelector((state) => state.chatbox);
+	const chatbox = useAppSelector(state => state.chatbox.chatDatas.find((chat) => chat.chatboxId === state.chatbox.chosenChatboxId))
 	const dispatch = useAppDispatch();
-
+	console.log(chatbox)
 	const [formValue, setFormValue] = useState('');
 
 	const handleSubmit = async (e: React.FormEvent<HTMLTextAreaElement>) => {
 		e.preventDefault();
-		if (formValue.trim() !== '') {
+		if (formValue.trim() !== '' && chatbox) {
 			const timeSent = Date.now();
 			let isDevided;
 			let isTimeStamped;
@@ -37,7 +38,7 @@ const Chatbox: React.FC = () => {
 				if (lastMessage.timeCreated <= timeSent - 1800000) {
 					isTimeStamped = true;
 				}
-			} else  if (lastMessage.uid === 1) {
+			} else  if (lastMessage.uid === user.uid) {
 
 				chatBorderOrder = 3;
 
@@ -60,6 +61,8 @@ const Chatbox: React.FC = () => {
 					chatBorderOrder: chatBorderOrder,
 				})
 			);
+
+			dispatch(saveChatDatas())
 		}
 		setFormValue('');
 	};
@@ -69,7 +72,7 @@ const Chatbox: React.FC = () => {
 			autoScrollElement.current.scrollTop =
 				autoScrollElement.current.scrollHeight;
 		}
-	}, [chatbox.messages]);
+	}, [chatbox?.messages]);
 
 	return (
 		<div
@@ -81,7 +84,7 @@ const Chatbox: React.FC = () => {
 				ref={autoScrollElement}
 				className={`relative flex flex-col flex-auto gap-[3px] px-4 pt-2 overflow-y-auto scroll-smooth`}
 			>
-				{chatbox.messages.map((message) => (
+				{chatbox?.messages.map((message) => (
 					<ChatMessage
 						key={message.messageId}
 						message={message}

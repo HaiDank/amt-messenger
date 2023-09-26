@@ -16,15 +16,18 @@ const styles: ThemeStateType[] = [
 		menuActive: 'bg-neutral-500',
 		iconBgColor: 'bg-white',
 		popupBgColor: 'bg-neutral-800',
+		popupBgHex: '#262626',
 	},
 	{
 		theme: ThemeName.LIGHT_THEME,
 		textNormal: 'text-black',
 		textFade: 'text-neutral-500',
 		bgColor: 'bg-white',
-		menuActive: 'bg-neutral-400',
+		menuActive: 'bg-neutral-100',
 		iconBgColor: 'bg-white',
 		popupBgColor: 'bg-neutral-100',
+		popupBgHex: '#f5f5f5',
+
 	},
 	{
 		theme: ThemeName.GREY_THEME,
@@ -34,6 +37,7 @@ const styles: ThemeStateType[] = [
 		menuActive: 'bg-neutral-500',
 		iconBgColor: 'bg-white',
 		popupBgColor: 'bg-neutral-700',
+		popupBgHex: '#404040',
 	},
 ];
 
@@ -46,6 +50,7 @@ export type ThemeStateType = {
 	menuActive: string;
 	iconBgColor: string;
 	popupBgColor: string;
+	popupBgHex: string;
 };
 
 const initialState: ThemeStateType = styles[1]

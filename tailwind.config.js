@@ -11,8 +11,8 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				'default-blue': '#067cff',
-				'default-purple': '#a901ff'
+				'default-blue': '#0a79ff',
+				'default-purple': '#a804fc'
 			}
 		},
 	},

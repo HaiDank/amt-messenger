@@ -10,48 +10,51 @@ import { IoIosArrowForward } from 'react-icons/io';
 import { AiFillMinusCircle, AiFillWarning } from 'react-icons/ai';
 import MenuItemHeader from '../MenuItemHeader';
 
+const chatOptionItems = [
+	{
+		title: 'Theme',
+		icon: <div className='p-2 mr-2 bg-blue-500 rounded-full' />,
+		suffix: (
+			<span className='text-lg text-neutral-400'>
+				<IoIosArrowForward />
+			</span>
+		),
+	},
+	{
+		title: 'Emoji',
+		icon: (
+			<span className='mr-3 text-blue-500'>
+				<HiThumbUp />
+			</span>
+		),
+		suffix: (
+			<span className='text-lg text-neutral-400'>
+				<IoIosArrowForward />
+			</span>
+		),
+	},
+	{
+		title: 'Edit Nicknames',
+		icon: (
+			<span className='mr-3 text-black'>
+				<BiSolidEditAlt />
+			</span>
+		),
+		suffix: (
+			<span className='text-lg text-neutral-400'>
+				<IoIosArrowForward />
+			</span>
+		),
+	},
+];
+
 const ChatOptions: React.FC = () => {
-	const chatOptionItems = [
-		{
-			title: 'Theme',
-			icon: <div className='p-2 mr-2 bg-blue-500 rounded-full' />,
-			suffix: (
-				<span className='text-lg text-neutral-400'>
-					<IoIosArrowForward />
-				</span>
-			),
-		},
-		{
-			title: 'Emoji',
-			icon: (
-				<span className='mr-3 text-blue-500'>
-					<HiThumbUp />
-				</span>
-			),
-			suffix: (
-				<span className='text-lg text-neutral-400'>
-					<IoIosArrowForward />
-				</span>
-			),
-		},
-		{
-			title: 'Edit Nicknames',
-			icon: (
-				<span className='mr-3 text-black'>
-					<BiSolidEditAlt />
-				</span>
-			),
-			suffix: (
-				<span className='text-lg text-neutral-400'>
-					<IoIosArrowForward />
-				</span>
-			),
-		},
-	];
+
+	
 
 	return (
 		<div className='flex flex-col w-[300px] p-3 pt-12 bg-gray-100 h-[500px] shadow-2xl items-center overflow-y-auto scrollbar-none'>
-			<div className='flex flex-col items-center gap-5 pt-4 pb-8'>
+			<div className='flex flex-col items-center gap-5 pt-2 pb-4 list-item-separated'>
 				<Avatar
 					className='flex-shrink-0'
 					size={64}

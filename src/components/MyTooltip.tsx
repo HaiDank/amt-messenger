@@ -1,6 +1,7 @@
 import { Tooltip } from 'antd';
 import { TooltipPlacement } from 'antd/es/tooltip';
 import React, { ReactNode } from 'react';
+import { useAppSelector } from '../hooks/useAppRedux';
 
 type MyTooltipPropsType = {
 	children: ReactNode;
@@ -13,10 +14,13 @@ const MyTooltip: React.FC<MyTooltipPropsType> = ({
 	title,
 	placement = 'top',
 }) => {
+
+	const theme = useAppSelector(state => state.theme)
+
 	return (
 		<Tooltip
-			title={<span className='text-xs text-black'>{title}</span>}
-            color='#f7f7f7'
+			title={<span className={`${theme.textNormal} text-xs`}>{title}</span>}
+            color={`${theme.popupBgHex}`}
 			placement={placement}
 			arrow={false}
 			mouseEnterDelay={0.6}
