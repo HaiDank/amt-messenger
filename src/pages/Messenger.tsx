@@ -1,15 +1,23 @@
 import React, { useEffect } from 'react';
 import Sidebar from '../components/sidebar/Sidebar';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Chatbox from '../components/chatbox/Chatbox';
+import { useAppDispatch, useAppSelector } from '../hooks/useAppRedux';
+import { fetchChatBoxes } from '../api';
 
 const Messenger: React.FC = () => {
+	const uid = useAppSelector((state) => state.user.uid);
+	const dispatch = useAppDispatch();
 
-	const navigate = useNavigate();
+	useEffect(() => {
+		const unsubscibe = fetchChatBoxes(dispatch, uid!);
 
-	useEffect(()=> {
-		// navigate('chats')
-	},[])
+		return () => {
+			if (unsubscibe) {
+				unsubscibe();
+			}
+		};
+	}, []);
 
 	return (
 		<>

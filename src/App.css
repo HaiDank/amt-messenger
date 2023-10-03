@@ -15,14 +15,12 @@ a.link-active {
 	color: rgba(170, 0, 255, 0.8);
 }
 
-.placeholder-medium::placeholder{
+.placeholder-medium::placeholder {
 	@apply font-medium;
 }
 
-
-
 .scrollbar-none::-webkit-scrollbar {
-    display: none;
+	display: none;
 }
 
 .resizer-r {
@@ -47,23 +45,23 @@ a.link-active {
 	position: absolute;
 }
 
-.react-draggable{
+.react-draggable {
 	position: absolute;
 	z-index: 100;
 }
 
-.ant-modal-content{
-	border-radius: 0.25rem !important	;
+.ant-modal-content {
+	background-color: transparent;
+
+	padding: 0 !important;
 }
 
 .ant-popover-inner {
 	padding: 0 !important;
-	
 }
 
 .list-item-separated {
 	@apply w-full pt-2 pb-4 border-b border-neutral-300 border-opacity-40;
-	
 }
 
 /* ChatMessage */
@@ -73,5 +71,12 @@ a.link-active {
 }
 
 .switch {
-	@apply mt-6 mb-3 ;
+	@apply mt-6 mb-3;
+}
+
+.drag-none {
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	-moz-user-drag: none;
+	-o-user-drag: none;
 }

@@ -7,17 +7,24 @@ import MenuItemHeader from '../../components/MenuItemHeader';
 import UserAvatar from '../../components/user/UserAvatar';
 import UserCarousel from '../../components/user/UserCarousel';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
-import { updateChosenChatbox } from '../../state/chat/ChatboxSlice';
+import { setChosenChatboxId } from '../../state/chat/messageSlice';
+import { parseSmallDatefromMs } from '../../utils/timeUtils';
 
 const Chats: React.FC = () => {
-	const chatAppData = useAppSelector(state => state.chatbox);
-	const dispatch = useAppDispatch()
-	const chosenChatboxId = chatAppData.chosenChatboxId;
+	const chatAppData = useAppSelector((state) => state.chatapp);
+	const dispatch = useAppDispatch();
+	const chosenChatboxId = useAppSelector(
+		(state) => state.messages.chosenChatboxId
+	);
+	const uid = useAppSelector(state => state.user.uid)
 
-	const handleChatOptionClick = (id: number) => {
-		dispatch(updateChosenChatbox(id));
+	const handleChatOptionClick = (id: string) => {
+		dispatch(setChosenChatboxId(id));
 	};
-	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
+	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log(e.target.value);
+		console.log(chatAppData.chatboxes);
+	};
 
 	return (
 		<div className='flex h-full border-neutral-400 border-opacity-40 border-r-[1px]'>
@@ -48,33 +55,35 @@ const Chats: React.FC = () => {
 				/>
 				<div className='overflow-y-auto overscroll-x-contain'>
 					<UserCarousel />
-					{chatAppData.chatDatas.map((chatbox) => {
-						if (chosenChatboxId === chatbox.chatboxId) {
+					{chatAppData.chatboxes.map((chatbox) => {
+						const isYou = chatbox.latestMessage?.uid! === uid
 							return (
 								<MenuItemHeader
 									key={chatbox.chatboxId}
-									onClick={() => handleChatOptionClick(chatbox.chatboxId)}
-									title="User's name"
-									icon={<UserAvatar online />}
-									description='Vũ Ngọc Hải Đăng: longgggggggg messssssaaaaggggeeeee'
-									descriptionTail='· Thu'
-									active
+									onClick={() =>
+										handleChatOptionClick(chatbox.chatboxId)
+									}
+									title={chatbox.otherUser!.name!}
+									icon={
+										<UserAvatar
+											online={chatbox.otherUser!.online!}
+											src={chatbox.otherUser!.avatarUrl!}
+											timeSinceLastOnline={
+												chatbox.otherUser!
+													.timeLastOnline!
+											}
+										/>
+									}
+									description={isYou? `You: ${chatbox.latestMessage?.text}` : `${chatbox.latestMessage?.text}`}
+									descriptionTail={parseSmallDatefromMs(
+										chatbox.latestMessage?.createdAt
+									)}
+									active = {chosenChatboxId === chatbox.chatboxId}
 									suffix={<UserAvatar size={14} />}
 								/>
 							);
-						}
-						return (
-							<MenuItemHeader
-									key={chatbox.chatboxId}
-									onClick={() => handleChatOptionClick(chatbox.chatboxId)}
-									title="User's name"
-									icon={<UserAvatar online />}
-									description='Vũ Ngọc Hải Đăng: longgggggggg messssssaaaaggggeeeee'
-									descriptionTail='· Thu'
-									suffix={<UserAvatar size={14} />}
-								/>
-						)
-					})}
+						})}
+						
 				</div>
 			</Resizable>
 		</div>

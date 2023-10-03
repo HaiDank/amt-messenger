@@ -18,6 +18,7 @@ import { TbLogout } from 'react-icons/tb';
 import { Switch } from 'antd';
 import { useAppSelector } from '../../hooks/useAppRedux';
 import MyTooltip from '../MyTooltip';
+import SignOutPopup from '../../pages/Auth/SignOutPopup';
 
 const iconStyle =
 	'relative text-white w-8 text-center text-lg rounded-full aspect-square flex items-center justify-around';
@@ -30,6 +31,7 @@ type SettingModalPropsType = {
 const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 	const theme = useAppSelector((state) => state.theme);
 	const [activeStatus, setActiveStatus] = useState(true);
+	const [openLogout, setOpenLogoutModal] = useState(false);
 
 	const settingMenuItems = [
 		{
@@ -45,6 +47,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: undefined,
 					suffix: undefined,
+					onClick: undefined,
 				},
 				{
 					title: 'Active Status',
@@ -56,6 +59,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: 'On',
 					suffix: undefined,
+					onClick: undefined,
 				},
 				{
 					title: 'Notifications',
@@ -73,6 +77,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 							</span>
 						</MyTooltip>
 					),
+					onClick: undefined,
 				},
 				{
 					title: 'Appearance',
@@ -84,6 +89,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: 'Light',
 					suffix: undefined,
+					onClick: undefined,
 				},
 				{
 					title: 'Language',
@@ -95,6 +101,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: 'System language',
 					suffix: undefined,
+					onClick: undefined,
 				},
 			],
 		},
@@ -115,6 +122,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: undefined,
 					suffix: undefined,
+					onClick: undefined,
 				},
 				{
 					title: 'Security alerts',
@@ -126,6 +134,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: undefined,
 					suffix: undefined,
+					onClick: undefined,
 				},
 			],
 		},
@@ -144,6 +153,9 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: undefined,
 					suffix: undefined,
+					onClick: () => {
+						setOpenLogoutModal(true);
+					},
 				},
 				{
 					title: 'Account settings',
@@ -154,7 +166,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 						</span>
 					),
 					description: undefined,
-
+					onClick: undefined,
 					suffix: (
 						<span className='text-xl text-neutral-500'>
 							<HiMiniArrowTopRightOnSquare />
@@ -171,6 +183,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: undefined,
 					suffix: undefined,
+					onClick: undefined,
 				},
 				{
 					title: 'Help',
@@ -186,6 +199,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 							<HiMiniArrowTopRightOnSquare />
 						</span>
 					),
+					onClick: undefined,
 				},
 				{
 					title: 'Legal & policies',
@@ -197,6 +211,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 					),
 					description: undefined,
 					suffix: undefined,
+					onClick: undefined,
 				},
 			],
 		},
@@ -387,9 +402,10 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 						</p>
 					</div>
 					<div className='list-item-separated'>
-						<h2 className='mt-2 font-semibold'>Text input spell-checking and auto-correction</h2>
+						<h2 className='mt-2 font-semibold'>
+							Text input spell-checking and auto-correction
+						</h2>
 						<Switch className='switch bg-neutral-300' />
-						
 					</div>
 				</>
 			),
@@ -413,8 +429,6 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 		}
 	};
 
-	useEffect(() => {}, []);
-
 	return (
 		open && (
 			<Draggable
@@ -432,7 +446,6 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 						minHeight={400}
 					>
 						<div
-							modal-header
 							className='absolute flex w-full bg-transparent'
 						>
 							<div
@@ -456,7 +469,6 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 						</div>
 
 						<section
-							modal-container
 							className='flex w-full h-full border border-black border-opacity-50 shadow-2xl scroll-smooth'
 						>
 							<div className='flex-shrink-0 h-full border-r w-[312px] border-neutral-400 border-opacity-40 overflow-y-auto'>
@@ -475,11 +487,15 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 														item.description
 													}
 													suffix={item.suffix}
-													onClick={() =>
-														setChosenMenuItem(
-															item.title
-														)
-													}
+													onClick={() => {
+														if (item.onClick) {
+															item.onClick();
+														} else {
+															setChosenMenuItem(
+																item.title
+															);
+														}
+													}}
 													active={
 														item.title ===
 														chosenMenuItem
@@ -507,6 +523,11 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 								)}
 							</div>
 						</section>
+
+						<SignOutPopup
+							open={openLogout}
+							setOpenModal={setOpenLogoutModal}
+						/>
 					</Resizable>
 				</div>
 			</Draggable>

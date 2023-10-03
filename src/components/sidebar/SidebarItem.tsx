@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Tooltip } from 'antd';
+import MyTooltip from '../MyTooltip';
 
 export type SidebarItemPropsType = {
     title: string,
@@ -27,7 +28,7 @@ const SidebarItem: React.FC<SidebarItemPropsType> = ({
 	};
 
 	return (
-		<Tooltip title={title} placement='top' arrow={false} mouseEnterDelay={0.7} mouseLeaveDelay={0}>
+		<MyTooltip title={title}>
 			<Link
 				to={path}
 				onClick={handleClick}
@@ -38,7 +39,7 @@ const SidebarItem: React.FC<SidebarItemPropsType> = ({
 			>
 				{icon}
 			</Link>
-		</Tooltip>
+		</MyTooltip>
 	);
 };
 

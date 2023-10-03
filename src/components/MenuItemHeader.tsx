@@ -64,7 +64,7 @@ const MenuItemHeader: React.FC<MenuItemHeaderPropsType> = ({
 							{description}
 						</span>
 						<span className='flex-grow whitespace-nowrap'>
-							{descriptionTail}
+						· {descriptionTail}
 						</span>
 					</div>
 				)}

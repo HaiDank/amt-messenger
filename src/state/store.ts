@@ -1,16 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import chatboxReducer from "./chat/ChatboxSlice";
 import themeReducer from "./settings/themeSlice";
 import customThemeSlice from "./settings/customThemeSlice";
 import userReducer from "./userSlice";
+import chatappReducer from "./chat/chatappSlice";
+import messageReducer from "./chat/messageSlice";
 
 
 const store = configureStore({
     reducer:{
+        messages: messageReducer,
         user: userReducer,
-        chatbox: chatboxReducer,
+        chatapp: chatappReducer,
         theme: themeReducer,
-        customTheme: customThemeSlice
+        customTheme: customThemeSlice,
     }
 
 })

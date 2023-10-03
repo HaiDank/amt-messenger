@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { Avatar, Button, Popover, Tooltip } from 'antd';
+import { Avatar, Button, Popover } from 'antd';
 import SidebarItem from './SidebarItem';
 import useAppRoutes from '../../hooks/useAppRoutes';
 import { BsFillGearFill, BsMessenger } from 'react-icons/bs';
 import SettingModal from '../setting/SettingModal';
 import { useAppSelector } from '../../hooks/useAppRedux';
+import MyTooltip from '../MyTooltip';
 
 const SidebarOption: React.FC = () => {
 	const [clicked, setClicked] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
 	const routes = useAppRoutes();
-	const user = useAppSelector(state => state.user)
+	const user = useAppSelector((state) => state.user);
 
 	const handlePreferenceClick = () => {
 		setOpenModal(true);
@@ -39,13 +40,7 @@ const SidebarOption: React.FC = () => {
 						/>
 					))}
 				</div>
-				<Tooltip
-					placement='top'
-					arrow={false}
-					title='Profile Menu'
-					mouseEnterDelay={0.7}
-					mouseLeaveDelay={0}
-				>
+				<MyTooltip title='Profile Menu'>
 					<Popover
 						overlayInnerStyle={{
 							borderRadius: '0.1rem',
@@ -69,13 +64,10 @@ const SidebarOption: React.FC = () => {
 						onOpenChange={handleProfileClick}
 					>
 						<div className='p-2 m-1'>
-							<Avatar
-								src={user.avatarURL}
-								size='large'
-							/>
+							<Avatar src={user.avatarUrl} size='large' />
 						</div>
 					</Popover>
-				</Tooltip>
+				</MyTooltip>
 			</div>
 			<SettingModal
 				open={openModal}

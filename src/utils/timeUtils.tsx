@@ -14,6 +14,37 @@ export function parseDatefromMs(duration: number) {
 	}
 }
 
+export function parseSmallDatefromMs(duration: number | undefined) {
+	if (duration) {
+		if (isMoreThanOneWeekAgo(duration)) {
+			return moment(duration).format('MMM DD');
+		} else if (isToday(duration)) {
+			return moment(duration).format(HOUR_TIME_FORMAT);
+		} else {
+			return moment(duration).format('ddd');
+		}
+	} else return undefined
+}
+
+export function parseTimeDifferencefromMs(duration: number | undefined){
+	if ( duration ){
+		const now = moment();
+		const past = moment(duration)
+		const difference = moment.duration(now.diff(past));
+
+		if (difference.days() > 0) {
+			return null;
+		} 
+		if(difference.hours() > 0) {
+			return difference.hours() + 'h'
+		}
+		if(difference.minutes() > 0) {
+			return difference.minutes() + 'm'
+		}
+		return '1m'
+	}
+}
+
 function isMoreThanOneWeekAgo(time: number) {
 	const now = Date.now();
 	const oneWeekAgo = now - 604800000;

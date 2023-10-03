@@ -5,9 +5,8 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './state/store.ts';
-import { fetchChatDatas } from './state/chat/ChatboxSlice.tsx';
 
-store.dispatch(fetchChatDatas())
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>

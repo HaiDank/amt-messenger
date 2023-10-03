@@ -11,7 +11,7 @@ type SidebarHeaderPropsType = {
 
 const SidebarHeader: React.FC<SidebarHeaderPropsType> = ({title, functionButton, chatOption, searchFunction}) => {
   return (
-    <div className='flex flex-col gap-4 mb-2 mt-7'>
+    <div className='flex flex-col gap-4 mt-12 mb-2'>
         <div className='flex items-center justify-between mx-3 text-2xl font-bold'>
             <span>{title}</span>
             <span>{functionButton}</span>
