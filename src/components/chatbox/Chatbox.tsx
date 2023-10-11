@@ -1,16 +1,15 @@
 import React, { useCallback, useRef, useState } from 'react';
 import ChatboxHeader from './ChatboxHeader';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
-
+import 'react-toastify/dist/ReactToastify.css'
 import ChatboxContent from './ChatboxContent';
 import {
 	MessageType,
 	postMessage,
 	updateChatBubbleOrderAPI,
 } from '../../state/chat/messageSlice';
-import { BiSolidPlusCircle } from 'react-icons/bi';
+import { BiSolidPlusCircle, BiSolidSend } from 'react-icons/bi';
 import IconButton from '../IconButton';
-import { HiThumbUp } from 'react-icons/hi';
 import clsx from 'clsx';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import MyTooltip from '../MyTooltip';
@@ -18,6 +17,10 @@ import MessengerInput from './MessengerInput';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../config/firebase';
 import { v4 } from 'uuid';
+import { HiThumbUp } from 'react-icons/hi';
+import { Button, Popover } from 'antd';
+import { BsMicFill, BsPaperclip } from 'react-icons/bs';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Chatbox: React.FC = () => {
 	const theme = useAppSelector((state) => state.theme);
@@ -33,8 +36,9 @@ const Chatbox: React.FC = () => {
 
 	const dispatch = useAppDispatch();
 
-	const formValue = useRef('');
-
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [formValue, setFormValue] = useState('');
+	const [openAddMedia, setOpenAddMedia] = useState(false);
 	const [dragActive, setDragActive] = useState(false);
 	const [filesWithPreviews, setFilesWithPreviews] = useState<
 		{
@@ -43,10 +47,9 @@ const Chatbox: React.FC = () => {
 		}[]
 	>([]);
 
-	const submitFiles = useCallback(async () => {
-		if (filesWithPreviews.length > 0) {
+	const submitOneFile = async (file: { file: File; preview: string }) => {
+		if (file) {
 			const timeSent = Date.now();
-
 			let isDevided = null;
 			let isTimeStamped = null;
 			const lastMessage = messages[0];
@@ -57,24 +60,19 @@ const Chatbox: React.FC = () => {
 					isTimeStamped = true;
 				}
 			}
-			const downloadUrls = await Promise.all(
-				filesWithPreviews.map(async (file) => {
-					const fileRef = ref(
-						storage,
-						`chat-box-files/${chosenChatboxId}/${file.file.name}` +
-							v4()
-					);
-
-					const snapshot = await uploadBytes(fileRef, file.file);
-
-					const downloadUrl = await getDownloadURL(snapshot.ref);
-					return downloadUrl;
-				})
+			const fileRef = ref(
+				storage,
+				`chat-box-files/${chosenChatboxId}/${file.file.name}` + v4()
 			);
+
+			const snapshot = await uploadBytes(fileRef, file.file);
+
+			const downloadUrl = await getDownloadURL(snapshot.ref);
 			const newMessage = {
 				uid: user.uid,
 				isUnsent: null,
-				mediaUrls: downloadUrls,
+				mediaType: file.file.type,
+				mediaUrl: downloadUrl,
 				reaction: null,
 				removeFromUID: null,
 				isDevided: isDevided,
@@ -86,21 +84,27 @@ const Chatbox: React.FC = () => {
 				createdAt: timeSent,
 			};
 			dispatch(postMessage(args));
-			setFilesWithPreviews([]);
 		}
-	},[filesWithPreviews, messages])
+	};
 
+	const submitFiles = useCallback(async () => {
+		if (filesWithPreviews.length > 0) {
+			filesWithPreviews.forEach((file) => {
+				submitOneFile(file);
+			});
+		}
+		setFilesWithPreviews([]);
+	}, [filesWithPreviews]);
 
 	const submitTexts = useCallback(() => {
-		if (formValue.current.trim().length > 0 && messages) {
+		if (formValue.trim().length > 0 && messages) {
 			const timeSent = Date.now();
 
 			let isDevided = null;
 			let isTimeStamped = null;
 			let chatBorderOrder = null;
 			const lastMessage = messages[0];
-			console.log('lastMessages',lastMessage)
-			console.log('messages',messages)
+
 
 			if (lastMessage.createdAt <= timeSent - 60000) {
 				isDevided = true;
@@ -130,7 +134,7 @@ const Chatbox: React.FC = () => {
 			}
 
 			const newMessage = {
-				text: formValue.current,
+				text: formValue,
 				uid: user.uid,
 				isUnsent: null,
 				reaction: null,
@@ -145,8 +149,7 @@ const Chatbox: React.FC = () => {
 				createdAt: timeSent,
 			};
 			dispatch(postMessage(args));
-			formValue.current = '';
-
+			setFormValue('');
 		}
 	}, [formValue, messages]);
 
@@ -169,37 +172,93 @@ const Chatbox: React.FC = () => {
 		}
 	};
 
-	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+	const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
 
 		setDragActive(false);
 
 		if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-			const files = Array.from(e.dataTransfer.files);
+			if (filesWithPreviews.length + e.dataTransfer.files.length <= 5) {
+				const files = Array.from(e.dataTransfer.files);
 
-			files.forEach((file) => {
-				const reader = new FileReader();
-				reader.onloadend = () => {
-					if (typeof reader.result === 'string') {
-						setFilesWithPreviews((prev) => [
-							...prev,
-							{ file: file, preview: reader.result as string },
-						]);
-					}
-				};
-				reader.readAsDataURL(file);
-			});
+				files.forEach((file) => {
+					const reader = new FileReader();
+					reader.onloadend = () => {
+						if (typeof reader.result === 'string') {
+							setFilesWithPreviews((prev) => [
+								...prev,
+								{
+									file: file,
+									preview: reader.result as string,
+								},
+							]);
+						}
+					};
+					reader.readAsDataURL(file);
+				});
+			} else {
+				toast.error('Cannot send more than 5 files', {
+					position: 'top-center',
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+					theme: 'light',
+				});
+			}
 		} else {
 			setFilesWithPreviews([]);
 		}
-	};
+	}, []);
 
 	const handleOnPaste = useCallback(
 		(event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-			const clipboardData = event.clipboardData;
-			const files = Array.from(clipboardData.files);
+			if (event.clipboardData && event.clipboardData.files[0])
+				if (
+					filesWithPreviews.length +
+						event.clipboardData.files.length <=
+					5
+				) {
+					const clipboardData = event.clipboardData;
+					const files = Array.from(clipboardData.files);
 
+					files.forEach((file) => {
+						const reader = new FileReader();
+						reader.onloadend = () => {
+							if (typeof reader.result === 'string') {
+								setFilesWithPreviews((prev) => [
+									...prev,
+									{
+										file: file,
+										preview: reader.result as string,
+									},
+								]);
+							}
+						};
+						reader.readAsDataURL(file);
+					});
+				} else {
+					toast('Cannot send more than 5 files', {
+						position: 'top-center',
+						autoClose: 3000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: 'light',
+					});
+				}
+		},
+		[filesWithPreviews]
+	);
+
+	const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files && event.target.files[0]) {
+			const files = Array.from(event.target.files);
 			files.forEach((file) => {
 				const reader = new FileReader();
 				reader.onloadend = () => {
@@ -212,13 +271,12 @@ const Chatbox: React.FC = () => {
 				};
 				reader.readAsDataURL(file);
 			});
-		},
-		[]
-	);
-
-	const removeFileWithPreview = (fileToRemove: File) => {
+		}
+		event.target.value = '';
+	};
+	const removeFileWithPreview = ( index: number) => {
 		setFilesWithPreviews((prev) =>
-			prev.filter((fp) => fp.file !== fileToRemove)
+			[...prev.splice(0,index), ...prev.splice(index + 1)]
 		);
 	};
 
@@ -230,14 +288,15 @@ const Chatbox: React.FC = () => {
 	) : (
 		<div
 			onDragEnter={handleDrag}
-			onDragLeave={handleDrag}
 			onDragOver={handleDrag}
-			onDrop={handleDrop}
 			className={`flex flex-col flex-1 max-w-full relative max-h-full min-w-0 pt-8 ${theme.bgColor} ${theme.textNormal}`}
 		>
+			<ToastContainer />
 			<div
+				onDrop={handleDrop}
+				onDragLeave={handleDrag}
 				className={clsx(
-					`absolute top-0 left-0 z-10 w-full h-full transition-all bg-opacity-50 font-bold text-lg flex items-center justify-center ${theme.bgColor} `,
+					`absolute top-0 left-0 z-50 w-full h-full transition-all bg-opacity-50 font-bold text-lg flex items-center justify-center ${theme.bgColor} `,
 					dragActive ? 'block' : 'hidden'
 				)}
 			>
@@ -249,16 +308,55 @@ const Chatbox: React.FC = () => {
 
 			<ChatboxContent />
 
-			<form
+			<section
 				className='flex items-end gap-3 p-3'
-				onSubmit={(e) => handleSubmit(e)}
 			>
-				<div className={`${customTheme.textColorPrimary} mb-[3px]`}>
-					<IconButton tooltipTitle='Add Media'>
-						<BiSolidPlusCircle />
-					</IconButton>
-				</div>
-
+				<input
+					ref={fileInputRef}
+					className='hidden'
+					type='file'
+					onChange={handleFileInput}
+				/>
+				<Popover
+					open={openAddMedia}
+					color={theme.popupBgHex}
+					content={
+						<div className='p-2'>
+							<Button
+								type='text'
+								block
+								size='small'
+								icon={<BsMicFill />}
+								className='flex items-center justify-center'
+							>
+								Record a Voice Clip
+							</Button>
+							<Button
+								type='text'
+								block
+								size='small'
+								icon={<BsPaperclip />}
+								className='flex items-center justify-center'
+								onClick={() => {
+									fileInputRef.current?.click();
+									setOpenAddMedia(false);
+								}}
+							>
+								Add Attachment(s)
+							</Button>
+						</div>
+					}
+					trigger='click'
+					zIndex={101}
+					arrow={false}
+					onOpenChange={(open) => setOpenAddMedia(open)}
+				>
+					<div className={`${customTheme.textColorPrimary} mb-[3px]`}>
+						<IconButton tooltipTitle='Add Media'>
+							<BiSolidPlusCircle />
+						</IconButton>
+					</div>
+				</Popover>
 				{/* image preview here */}
 				<div className='flex flex-col flex-auto px-2 py-1 bg-gray-200 bg-opacity-50 rounded-3xl'>
 					<div
@@ -280,7 +378,7 @@ const Chatbox: React.FC = () => {
 										className='absolute top-0 right-0 text-sm'
 										tooltipTitle='Remove Attachment'
 										onClick={() =>
-											removeFileWithPreview(file.file)
+											removeFileWithPreview(index)
 										}
 									>
 										<AiFillCloseCircle />
@@ -292,20 +390,29 @@ const Chatbox: React.FC = () => {
 
 					<MessengerInput
 						onPaste={handleOnPaste}
-						onUpdate={(args) => {
-							formValue.current = args;
-						}}
+						formValue={formValue}
+						setFormValue={setFormValue}
 						onSubmit={handleSubmit}
 					/>
 					{/*  */}
 				</div>
-
-				<div className={`${customTheme.textColorPrimary} mb-[4px]`}>
-					<IconButton tooltipTitle='Send a Like'>
-						<HiThumbUp />
-					</IconButton>
-				</div>
-			</form>
+				{formValue.length > 0 ? (
+					<div className={`${customTheme.textColorPrimary} mb-[4px]`}>
+						<IconButton
+							tooltipTitle='Send message'
+							onClick={handleSubmit}
+						>
+							<BiSolidSend />
+						</IconButton>
+					</div>
+				) : (
+					<div className={`${customTheme.textColorPrimary} mb-[4px]`}>
+						<IconButton tooltipTitle='Send a Like'>
+							<HiThumbUp />
+						</IconButton>
+					</div>
+				)}
+			</section>
 		</div>
 	);
 };

@@ -108,6 +108,8 @@ const ChatboxContent: React.FC = () => {
 					setHasNext(false);
 				}
 				console.log('asdasdawdasd', data);
+			}else {
+				setHasNext(false);
 			}
 		});
 		setIsLoading(false);
@@ -124,7 +126,6 @@ const ChatboxContent: React.FC = () => {
 
 	useEffect(() => {
 		const unsubscribe = fetchMessages();
-		console.log(lastMessage)
 		return () => {
 			if (unsubscribe) {
 				unsubscribe();

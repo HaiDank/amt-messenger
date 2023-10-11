@@ -16,7 +16,7 @@ const Chats: React.FC = () => {
 	const chosenChatboxId = useAppSelector(
 		(state) => state.messages.chosenChatboxId
 	);
-	const uid = useAppSelector(state => state.user.uid)
+	const uid = useAppSelector((state) => state.user.uid);
 
 	const handleChatOptionClick = (id: string) => {
 		dispatch(setChosenChatboxId(id));
@@ -53,38 +53,49 @@ const Chats: React.FC = () => {
 						</Tooltip>
 					}
 				/>
+				
 				<div className='overflow-y-auto overscroll-x-contain'>
 					<UserCarousel />
 					{chatAppData.chatboxes.map((chatbox) => {
-						const isYou = chatbox.latestMessage?.uid! === uid
-							return (
-								<MenuItemHeader
-									key={chatbox.chatboxId}
-									onClick={() =>
-										handleChatOptionClick(chatbox.chatboxId)
-									}
-									title={chatbox.otherUser!.name!}
-									icon={
-										<UserAvatar
-											online={chatbox.otherUser!.online!}
-											src={chatbox.otherUser!.avatarUrl!}
-											timeSinceLastOnline={
-												chatbox.otherUser!
-													.timeLastOnline!
-											}
-										/>
-									}
-									description={isYou? `You: ${chatbox.latestMessage?.text}` : `${chatbox.latestMessage?.text}`}
-									descriptionTail={parseSmallDatefromMs(
-										chatbox.latestMessage?.createdAt
-									)}
-									active = {chosenChatboxId === chatbox.chatboxId}
-									suffix={<UserAvatar size={14} />}
-								/>
-							);
-						})}
-						
+						const isYou = chatbox.latestMessage?.uid! === uid;
+						return (
+							<MenuItemHeader
+								key={chatbox.chatboxId}
+								onClick={() =>
+									handleChatOptionClick(chatbox.chatboxId)
+								}
+								title={chatbox.otherUser!.name!}
+								icon={
+									<UserAvatar
+										online={chatbox.otherUser!.online!}
+										src={chatbox.otherUser!.avatarUrl!}
+										timeSinceLastOnline={
+											chatbox.otherUser!.timeLastOnline!
+										}
+									/>
+								}
+								description={
+									chatbox.latestMessage &&
+									chatbox.latestMessage.text
+										? isYou
+											? `You: ${chatbox.latestMessage?.text}`
+											: `${chatbox.latestMessage?.text}`
+										: chatbox.latestMessage &&
+										  chatbox.latestMessage.mediaUrl &&
+										  isYou
+										? `You: sent an attachment`
+										: `sent an attachment`
+								}
+								descriptionTail={parseSmallDatefromMs(
+									chatbox.latestMessage?.createdAt
+								)}
+								active={chosenChatboxId === chatbox.chatboxId}
+								suffix={<UserAvatar size={14} />}
+							/>
+						);
+					})}
 				</div>
+				
 			</Resizable>
 		</div>
 	);

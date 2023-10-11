@@ -14,7 +14,8 @@ export type MessageType = {
 	createdAt: number;
 	uid: string;
 	reaction: string[] | null;
-	mediaUrls: string[] | null;
+	mediaUrl: string | null;
+	mediaType: string | null;
 	removeFromUID: string[] | null;
 	isUnsent: boolean | null;
 	isDevided: boolean | null;

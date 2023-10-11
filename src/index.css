@@ -27,6 +27,11 @@ div#root {
 	height: 100%;
 }
 
+svg {
+    display: block;
+    margin: auto;
+}
+
 /* width */
 ::-webkit-scrollbar {
 	width: 5px;

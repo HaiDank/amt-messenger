@@ -33,7 +33,7 @@ const UserCarousel: React.FC = () => {
 				} else {
 					scrollDiv.scrollBy({left: -50, behavior: 'smooth'})
 				}
-				if (scrollDiv.scrollLeft === 0) {
+				if (scrollDiv.scrollLeft <= 10) {
 					setLeftButtonDisabled(true);
 				} else {
 					setLeftButtonDisabled(false);
@@ -55,7 +55,7 @@ const UserCarousel: React.FC = () => {
 				} else {
 					scrollDiv.scrollBy({left: -50, behavior: 'smooth'})
 				}
-				if (scrollDiv.scrollLeft === 0) {
+				if (scrollDiv.scrollLeft <= 10) {
 					setLeftButtonDisabled(true);
 				} else {
 					setLeftButtonDisabled(false);
@@ -68,6 +68,7 @@ const UserCarousel: React.FC = () => {
 			});
 		};
 	}, []);
+
 
 	const handleHorizantalScroll = (
 		element: HTMLDivElement | null,

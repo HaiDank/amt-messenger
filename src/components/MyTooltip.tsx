@@ -22,6 +22,7 @@ const MyTooltip: React.FC<MyTooltipPropsType> = ({
 			title={<span className={`${theme.textNormal} text-xs`}>{title}</span>}
             color={`${theme.popupBgHex}`}
 			placement={placement}
+			zIndex={100}
 			arrow={false}
 			mouseEnterDelay={0.6}
 			mouseLeaveDelay={0}

@@ -1,5 +1,5 @@
 import TextArea from 'antd/es/input/TextArea';
-import React, { useEffect, useState } from 'react';
+import React, { memo, } from 'react';
 import IconButton from '../IconButton';
 import { PiSmileyFill, PiStickerFill } from 'react-icons/pi';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
@@ -7,17 +7,17 @@ import { useAppSelector } from '../../hooks/useAppRedux';
 import { Popover } from 'antd';
 
 type Props = {
-	onUpdate: (arg: string) => void;
+	formValue: string;
+	setFormValue: React.Dispatch<React.SetStateAction<string>>;
 	onPaste: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void;
 	onSubmit: (
 		e: React.FormEvent<HTMLFormElement | HTMLTextAreaElement>
 	) => void;
 };
 
-const MessengerInput: React.FC<Props> = ({ onUpdate, onSubmit, onPaste }) => {
+const MessengerInput: React.FC<Props> = ({ formValue, setFormValue, onSubmit, onPaste }) => {
 	const customTheme = useAppSelector((state) => state.customTheme);
 
-	const [formValue, setFormValue] = useState('');
 
 	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setFormValue(e.target.value);
@@ -33,7 +33,6 @@ const MessengerInput: React.FC<Props> = ({ onUpdate, onSubmit, onPaste }) => {
 	const handleSubmit = (e: React.FormEvent<HTMLTextAreaElement>) => {
 		if (onSubmit) {
 			onSubmit(e);
-			setFormValue('');
 		}
 	};
 
@@ -41,11 +40,6 @@ const MessengerInput: React.FC<Props> = ({ onUpdate, onSubmit, onPaste }) => {
 		setFormValue((prev) => prev + emojiObject.emoji);
 	};
 
-	useEffect(() => {
-		if (onUpdate) {
-			onUpdate(formValue);
-		}
-	}, [formValue]);
 
 	return (
 		<>
@@ -79,8 +73,9 @@ const MessengerInput: React.FC<Props> = ({ onUpdate, onSubmit, onPaste }) => {
 					</Popover>
 				</div>
 			</div>
+			
 		</>
 	);
 };
 
-export default MessengerInput;
+export default memo(MessengerInput);

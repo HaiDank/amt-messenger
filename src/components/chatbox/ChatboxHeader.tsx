@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Button, Popover } from 'antd';
 import { BiSolidPhone, BiSolidVideo } from 'react-icons/bi';
 import { IoSearchSharp } from 'react-icons/io5';
@@ -63,4 +63,4 @@ const ChatboxHeader: React.FC = () => {
 	);
 };
 
-export default ChatboxHeader;
+export default memo(ChatboxHeader);

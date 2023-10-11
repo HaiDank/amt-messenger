@@ -1,12 +1,14 @@
 import { Avatar, Button } from 'antd';
 import clsx from 'clsx';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { parseDatefromMs } from '../../utils/timeUtils';
 import { useAppSelector } from '../../hooks/useAppRedux';
 import MyTooltip from '../MyTooltip';
 import { PiSmileyFill } from 'react-icons/pi';
 import { BiSolidShare } from 'react-icons/bi';
 import { MessageType } from '../../state/chat/messageSlice';
+import AudioPlayer from './AudioPlayer/AudioPlayer';
+import VideoPlayer from './VideoPlayer/VideoPlayer';
 
 type ChatMessagePropsType = {
 	message: MessageType;
@@ -20,6 +22,9 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 		const customTheme = useAppSelector((state) => state.customTheme);
 		const theme = useAppSelector((state) => state.theme);
 		const isUser = message.uid === user.uid;
+		const [contentType, setContentType] = useState<
+			'text' | 'audio' | 'video' | 'image'
+		>('text');
 		let chatBubbleStyle = '';
 
 		if (isUser) {
@@ -59,6 +64,32 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 				}
 			}
 		}
+
+		useEffect(() => {
+			if (message) {
+				if (message.text) {
+					setContentType('text');
+				} else if (message.mediaUrl && message.mediaType) {
+					const type = message.mediaType.split('/')[0]; // Extract the primary type
+
+					switch (type) {
+						case 'image':
+							setContentType('image');
+							break;
+						case 'audio':
+							setContentType('audio');
+							break;
+
+						case 'video':
+							setContentType('video');
+							break;
+
+						default:
+							break;
+					}
+				}
+			}
+		}, []);
 
 		return (
 			<div>
@@ -101,7 +132,8 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 						)}
 					>
 						{/* chat bubble and title */}
-						{ message.text && message.text.trim().length > 0 && (
+
+						{contentType === 'text' && (
 							<MyTooltip
 								title={parseDatefromMs(message.createdAt)}
 							>
@@ -118,19 +150,54 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 							</MyTooltip>
 						)}
 
-						{/*  */}
-						{message.mediaUrls && message.mediaUrls.length! > 0 &&
-							message.mediaUrls.map((url,index) => (
-								<MyTooltip
-								key={index}
-									title={parseDatefromMs(message.createdAt)}
+						{/* image view */}
+						{contentType === 'image' && (
+							<MyTooltip
+								title={parseDatefromMs(message.createdAt)}
+							>
+								<img
+									className='px-3 py-[6px] rounded-3xl max-w-[70%] max-h-60 h-auto aspect-auto'
+									src={message.mediaUrl!}
+								></img>
+							</MyTooltip>
+						)}
+						{/* audio 'view' */}
+
+						{contentType === 'audio' && (
+							<MyTooltip
+								title={parseDatefromMs(message.createdAt)}
+							>
+								<div
+									className={clsx(
+										`	min-w-[6rem] w-40 rounded-3xl px-2 py-[6px] overflow-hidden relative flex items-center justify-between  max-w-[70%] ${chatBubbleStyle}`,
+										isUser
+											? `text-white`
+											: `bg-neutral-200 bg-opacity-50 ${theme.textNormal}`
+									)}
 								>
-									<img
-										className='px-3 py-[6px] rounded-3xl max-w-[70%] max-h-60'
-										src={url}
-									></img>
-								</MyTooltip>
-							))}
+									<AudioPlayer src={message.mediaUrl!} />
+								</div>
+							</MyTooltip>
+						)}
+
+						{/* video view */}
+
+						{contentType === 'video' && (
+							<MyTooltip
+								title={parseDatefromMs(message.createdAt)}
+							>
+								<div
+									className={clsx(
+										`	min-w-[40%]  rounded-3xl  overflow-hidden relative flex items-center justify-between  max-w-[70%] ${chatBubbleStyle}`,
+										isUser
+											? `text-white`
+											: `bg-neutral-200 bg-opacity-50 ${theme.textNormal}`
+									)}
+								>
+									<VideoPlayer src={message.mediaUrl!} />
+								</div>
+							</MyTooltip>
+						)}
 
 						{/* message actions */}
 

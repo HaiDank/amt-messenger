@@ -5,14 +5,15 @@ type IconButtonPropsType = {
 	tooltipTitle: string;
 	children: ReactNode;
 	className?:string;
-	onClick? : ()=>void
+	onClick? : (arg?:any)=>void
+	disabled?:boolean;
 };
 
 const IconButton: React.FC<IconButtonPropsType> = ({
 	tooltipTitle,
 	children,
 	className,
-	onClick
+	onClick,
 }) => {
 
 	const handleOnClick = () =>{
@@ -22,7 +23,7 @@ const IconButton: React.FC<IconButtonPropsType> = ({
 	}
 
 	return (
-		<MyTooltip title={tooltipTitle}>
+		<MyTooltip  title={tooltipTitle}>
 			<button className={`gap-2 p-1 text-2xl text-inherit hover:brightness-75 ${className}`} onClick={handleOnClick}>{children}</button>
 		</MyTooltip>
 	);
