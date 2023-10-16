@@ -24,7 +24,7 @@ const IconButton: React.FC<IconButtonPropsType> = ({
 
 	return (
 		<MyTooltip  title={tooltipTitle}>
-			<button className={`gap-2 p-1 text-2xl text-inherit hover:brightness-75 ${className}`} onClick={handleOnClick}>{children}</button>
+			<button className={`gap-2 p-1 text-2xl text-inherit hover:brightness-75 drag-none ${className}`} onClick={handleOnClick}>{children}</button>
 		</MyTooltip>
 	);
 };

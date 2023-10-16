@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useAppRedux';
 import ChatMessage from './ChatMessage';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 import {
 	DocumentData,
 	collection,
@@ -16,22 +16,25 @@ import {
 	MessageType,
 	addMessages,
 	loadMessages,
-} from '../../state/chat/messageSlice';
-import { db } from '../../config/firebase';
-
+} from '../../../state/chat/messageSlice';
+import { db } from '../../../config/firebase';
 const ChatboxContent: React.FC = () => {
-	const autoScrollElement = useRef<HTMLDivElement>(null);
 	const dispatch = useAppDispatch();
 	const messages = useAppSelector((state) => state.messages.messages);
 	const messageState = useAppSelector((state) => state.messages);
+	const chosenChatboxId = useAppSelector(
+		(state) => state.messages.chosenChatbox?.chatboxId!
+	);
+
+	const autoScrollElement = useRef<HTMLDivElement>(null);
+
+	// state
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [hasNext, setHasNext] = useState(true);
 	const [lastMessage, setLastMessage] = useState<DocumentData | null>(null);
 
-	const chosenChatboxId = useAppSelector(
-		(state) => state.messages.chosenChatboxId
-	);
+	
 	const messagesRef = collection(db, `chat-box/${chosenChatboxId}/messages`);
 
 	const fetchMessages = useCallback(() => {
@@ -55,8 +58,7 @@ const ChatboxContent: React.FC = () => {
 					messageSnapshot.docs[messageSnapshot.docs.length - 1]
 				);
 
-		console.log(lastMessage)
-
+				console.log(lastMessage);
 
 				if (data.length > 0) {
 					dispatch(loadMessages(data));
@@ -77,10 +79,10 @@ const ChatboxContent: React.FC = () => {
 			limit(15),
 			startAfter(lastMessage)
 		);
-		console.log('1233', lastMessage)
+		console.log('1233', lastMessage);
 
 		getDocs(q).then((messageSnapshot) => {
-		console.log('1233', messageSnapshot.empty)
+			console.log('1233', messageSnapshot.empty);
 
 			if (!messageSnapshot.empty) {
 				let data: MessageType[] = [];
@@ -108,19 +110,17 @@ const ChatboxContent: React.FC = () => {
 					setHasNext(false);
 				}
 				console.log('asdasdawdasd', data);
-			}else {
+			} else {
 				setHasNext(false);
 			}
 		});
 		setIsLoading(false);
-
 	}, [lastMessage]);
 
 	const lastMessageRef = useIntersectionObserver<HTMLDivElement>(() => {
 		if (!isLoading && hasNext && lastMessage) {
 			console.log('loadNextMessages');
 			fetchNextMessages();
-			
 		}
 	}, [!isLoading, hasNext]);
 
@@ -145,13 +145,20 @@ const ChatboxContent: React.FC = () => {
 			ref={autoScrollElement}
 			className={`relative flex flex-col-reverse flex-auto gap-[3px] px-4 pt-2 overflow-y-auto overflow-x-hidden scroll-smooth`}
 		>
-			{messages.map((message, index,messages) => (
-				<ChatMessage
-					key={message.messageId}
-					message={message}
-					ref={index === messages.length - 1 ? lastMessageRef : null}
-				/>
+			{messages.map((message, index, messages) => (
+				<div>
+					<ChatMessage
+						key={index}
+						message={message}
+						ref={
+							index === messages.length - 1
+								? lastMessageRef
+								: null
+						}
+					/>
+				</div>
 			))}
+			
 		</section>
 	);
 };

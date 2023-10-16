@@ -33,6 +33,12 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 			setDuration(videoEl.duration);
 			setRemainingTime(videoEl.duration);
 			videoEl.volume = volume;
+			if (volumeBar && volumeBar.current) {
+				volumeBar.current.style.setProperty(
+					'--seek-before-width',
+					`${volume * 100}%`
+				);
+			}
 		};
 
 		videoEl.addEventListener('loadedmetadata', handleMetadataLoad);
@@ -155,7 +161,7 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 			<video
 				ref={videoPlayer}
 				src={src}
-				className='w-full h-full '
+				className='w-full h-full max-h-[512px]'
 				preload='metadata'
 				onClick={togglePlayPause}
 			/>
@@ -215,7 +221,7 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 						className='p-0 -rotate-90 translate-x-[5px] -translate-y-9 bg-transparent'
 						arrow={false}
 						content={
-							<div className=''>
+							<div className='flex items-center justify-center'>
 								<input
 									ref={volumeBar}
 									className='w-20 bg-transparent volume-range'

@@ -4,6 +4,8 @@ import customThemeSlice from "./settings/customThemeSlice";
 import userReducer from "./userSlice";
 import chatappReducer from "./chat/chatappSlice";
 import messageReducer from "./chat/messageSlice";
+import fileViewReducer from "./chat/fileViewSlice";
+import viewPortReducer from "./chat/viewPortSlice";
 
 
 const store = configureStore({
@@ -12,6 +14,8 @@ const store = configureStore({
         user: userReducer,
         chatapp: chatappReducer,
         theme: themeReducer,
+        fileView: fileViewReducer,
+        viewPort: viewPortReducer,
         customTheme: customThemeSlice,
     }
 

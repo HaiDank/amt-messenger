@@ -23,7 +23,7 @@ const UserAvatar: React.FC<UserAvatarPropsType> = ({
 		badgeStyle = 'absolute bottom-[2px] min-w-[.75rem] h-[.75rem] transform bg-green-400 border-2 border-white rounded-full right-0 translate-y-1/4 dark:border-gray-800'
 	}
 	return (
-		<div className='relative flex-shrink-0'>
+		<div className='relative flex-shrink-0 drag-none'>
 			<Tooltip
 				title={tooltip}
 				arrow={false}

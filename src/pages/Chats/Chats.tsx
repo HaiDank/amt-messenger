@@ -7,19 +7,20 @@ import MenuItemHeader from '../../components/MenuItemHeader';
 import UserAvatar from '../../components/user/UserAvatar';
 import UserCarousel from '../../components/user/UserCarousel';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
-import { setChosenChatboxId } from '../../state/chat/messageSlice';
+import { setChosenChatbox} from '../../state/chat/messageSlice';
 import { parseSmallDatefromMs } from '../../utils/timeUtils';
+import { ChatboxType } from '../../state/chat/chatappSlice';
 
 const Chats: React.FC = () => {
 	const chatAppData = useAppSelector((state) => state.chatapp);
 	const dispatch = useAppDispatch();
 	const chosenChatboxId = useAppSelector(
-		(state) => state.messages.chosenChatboxId
+		(state) => state.messages.chosenChatbox?.chatboxId
 	);
 	const uid = useAppSelector((state) => state.user.uid);
 
-	const handleChatOptionClick = (id: string) => {
-		dispatch(setChosenChatboxId(id));
+	const handleChatOptionClick = (chatbox: ChatboxType) => {
+		dispatch(setChosenChatbox(chatbox));
 	};
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		console.log(e.target.value);
@@ -27,8 +28,8 @@ const Chats: React.FC = () => {
 	};
 
 	return (
-		<div className='flex h-full border-neutral-400 border-opacity-40 border-r-[1px]'>
-			<Resizable maxWidth={550} minWidth={270}>
+		<div className='flex h-full border-neutral-400 border-opacity-40 border-r-[1px] flex-grow-1 flex-shrink-1 max-w-lg min-w-[270px]'>
+			<Resizable maxWidth={511} minWidth={270}>
 				<SidebarHeader
 					title='Chats'
 					searchFunction={onChange}
@@ -56,13 +57,13 @@ const Chats: React.FC = () => {
 				
 				<div className='overflow-y-auto overscroll-x-contain'>
 					<UserCarousel />
-					{chatAppData.chatboxes.map((chatbox) => {
+					{chatAppData.chatboxes.map((chatbox, index) => {
 						const isYou = chatbox.latestMessage?.uid! === uid;
 						return (
 							<MenuItemHeader
-								key={chatbox.chatboxId}
+								key={index}
 								onClick={() =>
-									handleChatOptionClick(chatbox.chatboxId)
+									handleChatOptionClick(chatbox)
 								}
 								title={chatbox.otherUser!.name!}
 								icon={

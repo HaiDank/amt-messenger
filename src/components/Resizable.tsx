@@ -114,7 +114,7 @@ const Resizable: React.FC<ResizablePropsType> = ({
 	return (
 		<div
 			ref={ref}
-			className={`max-w-[${maxWidth}] min-w-[${minWidth}] max-h-[${maxHeight}] min-h-[${minHeight}] flex flex-col flex-1 relative bg-white resize`}
+			className={`max-w-[${maxWidth}] min-w-[${minWidth}] max-h-[${maxHeight}] min-h-[${minHeight}] flex flex-col flex-1 relative bg-opacity-0 resize`}
 		>
 			{children}
 			<div ref={refRight} className='resizer-r'></div>

@@ -1,0 +1,7 @@
+.media-view-btn {
+    visibility: hidden;
+}
+
+.media-container:hover > .media-view-btn {
+    visibility: visible;
+}

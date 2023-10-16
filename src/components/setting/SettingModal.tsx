@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Draggable from 'react-draggable';
+import React, { useRef, useState } from 'react';
+import Draggable, { DraggableEvent } from 'react-draggable';
 import Resizable from '../Resizable';
 import { Button, Select } from 'antd';
 import MenuItemHeader from '../MenuItemHeader';
@@ -429,6 +429,11 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 		}
 	};
 
+	const handleDrag = (e: DraggableEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+    }
+
 	return (
 		open && (
 			<Draggable
@@ -436,6 +441,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 				defaultPosition={{ x: 370, y: 40 }}
 				nodeRef={draggleRef}
 				bounds={bounds}
+				onDrag={handleDrag}
 			>
 				<div ref={draggleRef}>
 					<Resizable
@@ -469,7 +475,7 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 						</div>
 
 						<section
-							className='flex w-full h-full border border-black border-opacity-50 shadow-2xl scroll-smooth'
+							className={`flex w-full h-full border border-black border-opacity-50 shadow-2xl scroll-smooth ${theme.popupBgColor}`}
 						>
 							<div className='flex-shrink-0 h-full border-r w-[312px] border-neutral-400 border-opacity-40 overflow-y-auto'>
 								{settingMenuItems.map((section, index) => {
@@ -507,16 +513,16 @@ const SettingModal: React.FC<SettingModalPropsType> = ({ open, onCancel }) => {
 								})}
 							</div>
 							<div className='flex flex-col flex-1 px-8 overflow-x-hidden overflow-y-auto pt-14'>
-								{settingDisplayItem.map((item) =>
+								{settingDisplayItem.map((item, index) =>
 									item.title === chosenMenuItem ? (
-										<>
+										<section key={index}>
 											<h1
 												className={`${theme.textNormal} font-bold text-xl py-1`}
 											>
 												{item.title}
 											</h1>
 											{item.render}
-										</>
+										</section>
 									) : (
 										''
 									)

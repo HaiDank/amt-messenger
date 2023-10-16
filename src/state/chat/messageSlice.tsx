@@ -8,6 +8,7 @@ import {
 	updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { ChatboxType } from './chatappSlice';
 
 export type MessageType = {
 	text: string;
@@ -26,13 +27,13 @@ export type MessageType = {
 
 type MessageSliceType = {
 	messages: MessageType[];
-	chosenChatboxId: string | null;
+	chosenChatbox: ChatboxType | null;
 	posting: boolean,
 };
 
 const initialState: MessageSliceType = {
 	messages: [],
-	chosenChatboxId: null,
+	chosenChatbox: null,
 	posting: false,
 };
 
@@ -79,7 +80,7 @@ export const updateChatBubbleOrderAPI = createAsyncThunk(
 			const state = getState() as RootState;
 			const messageRef = doc(
 				db,
-				`chat-box/${state.messages.chosenChatboxId}/messages`,
+				`chat-box/${state.messages.chosenChatbox?.chatboxId}/messages`,
 				messageId
 			);
 
@@ -114,8 +115,9 @@ const messageSlice = createSlice({
 			const { index, order } = action.payload;
 			state.messages[index].chatBorderOrder = order;
 		},
-		setChosenChatboxId: (state, action: PayloadAction<string>) => {
-			state.chosenChatboxId = action.payload;
+		setChosenChatbox: (state, action: PayloadAction<ChatboxType>) => {
+			state.chosenChatbox = action.payload
+
 		},
 	},
 	extraReducers: (builder) => {
@@ -136,7 +138,7 @@ export const {
 	addMessages,
 	loadMessages,
 	updateChatBubbleOrder,
-	setChosenChatboxId,
+	setChosenChatbox,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;
