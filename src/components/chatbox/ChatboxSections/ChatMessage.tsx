@@ -1,4 +1,4 @@
-import { Avatar, Button } from 'antd';
+import { Avatar, Button, Popover } from 'antd';
 import clsx from 'clsx';
 import { forwardRef, useEffect, useState } from 'react';
 import { parseDatefromMs } from '../../../utils/timeUtils';
@@ -10,10 +10,13 @@ import { MessageType } from '../../../state/chat/messageSlice';
 import AudioPlayer from './../AudioPlayer/AudioPlayer';
 import VideoPlayer from './../VideoPlayer/VideoPlayer';
 import { IconBase } from 'react-icons';
-import { AiOutlineArrowsAlt } from 'react-icons/ai';
-import './chat-box.css'
-import { setOpenFileView } from '../../../state/chat/fileViewSlice';
-
+import { AiOutlineArrowsAlt, AiOutlinePlus } from 'react-icons/ai';
+import './chat-box.css';
+import {
+	setChosenChatboxFileView,
+	setChosenFileUrl,
+	setOpenFileView,
+} from '../../../state/chat/fileViewSlice';
 
 type ChatMessagePropsType = {
 	message: MessageType;
@@ -22,17 +25,21 @@ type ChatMessagePropsType = {
 };
 
 const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
-	({ message, isGroupChat, isSeen}, ref) => {
+	({ message, isGroupChat, isSeen }, ref) => {
 		const user = useAppSelector((state) => state.user);
 		const customTheme = useAppSelector((state) => state.customTheme);
 		const theme = useAppSelector((state) => state.theme);
 		const isUser = message.uid === user.uid;
 		const dispatch = useAppDispatch();
+		const chosenChatbox = useAppSelector(
+			(state) => state.messages.chosenChatbox
+		);
 		// state
 		const [contentType, setContentType] = useState<
 			'text' | 'audio' | 'video' | 'image'
 		>('text');
-
+		const [isOpenReaction, setIsOpenReaction] = useState(false);
+		const emojiList = ['❤️', '😆', '😮', '😢', '😠', '👍', '👎'];
 
 		let chatBubbleStyle = '';
 
@@ -43,11 +50,11 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 					break;
 				}
 				case 2: {
-					chatBubbleStyle = 'rounded-e-md';
+					chatBubbleStyle = 'rounded-se-md';
 					break;
 				}
 				case 3: {
-					chatBubbleStyle = 'rounded-se-md';
+					chatBubbleStyle = 'rounded-e-md';
 					break;
 				}
 				default: {
@@ -61,11 +68,11 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 					break;
 				}
 				case 2: {
-					chatBubbleStyle = 'rounded-s-md';
+					chatBubbleStyle = 'rounded-ss-md';
 					break;
 				}
 				case 3: {
-					chatBubbleStyle = 'rounded-ss-md';
+					chatBubbleStyle = 'rounded-s-md';
 					break;
 				}
 				default: {
@@ -74,9 +81,15 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 			}
 		}
 
-		const handleSetOpenFileView = (value: boolean) => {
-			dispatch(setOpenFileView(value))
-		}
+		const handleSetOpenFileView = (url: string) => {
+			dispatch(setOpenFileView(true));
+			dispatch(setChosenChatboxFileView(chosenChatbox!));
+			dispatch(setChosenFileUrl(url));
+		};
+
+		const handleOpenReaction = (value: boolean) => {
+			setIsOpenReaction(value);
+		};
 
 		useEffect(() => {
 			if (message) {
@@ -110,7 +123,7 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 					{/*  */}
 					{message.isDevided && (
 						<div
-							className={`flex items-center justify-center py-1 text-xs text-opacity-75 ${theme.textFade}`}
+							className={`flex items-center justify-center py-[6px] text-xs text-opacity-75 ${theme.textFade}`}
 						>
 							{message.isTimeStamped ? (
 								<span className='py-[6px] select-none'>
@@ -171,7 +184,7 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 								>
 									<div
 										className={clsx(
-											`relative rounded-3xl max-w-[70%] max-h-[512px] overflow-hidden h-auto aspect-auto media-container ${chatBubbleStyle}`,
+											`relative rounded-3xl max-w-[70%] max-h-[312px] overflow-hidden h-auto aspect-auto media-container ${chatBubbleStyle}`,
 											isUser
 												? ''
 												: `bg-neutral-200 bg-opacity-50 ${theme.textNormal}`
@@ -181,7 +194,10 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 											<MyTooltip title='Open image in full screen'>
 												<button
 													className='p-2 bg-opacity-50 rounded-full bg-neutral-500 hover:bg-opacity-100'
-													onClick={() => handleSetOpenFileView(true)
+													onClick={() =>
+														handleSetOpenFileView(
+															message.mediaUrl!
+														)
 													}
 												>
 													<IconBase className='text-lg text-white'>
@@ -191,7 +207,7 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 											</MyTooltip>
 										</div>
 										<img
-											className='w-full h-full aspect-auto max-h-[512px] max-w-full'
+											className='w-full h-full aspect-auto max-h-[312px] max-w-full'
 											src={message.mediaUrl!}
 										/>
 									</div>
@@ -224,17 +240,20 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 								>
 									<div
 										className={clsx(
-											`max-h-[512px] min-w-[200px]  rounded-3xl  overflow-hidden relative  max-w-[70%] media-container  ${chatBubbleStyle}`,
+											`max-h-[420px] min-w-[200px] rounded-3xl overflow-hidden relative max-w-[70%] media-container  ${chatBubbleStyle}`,
 											isUser
 												? `text-white`
-												: `bg-neutral-200 bg-opacity-50 ${theme.textNormal}`
+												: `bg-neutral-200 bg-opacity-50 text-white`
 										)}
 									>
 										<div className='absolute z-10 top-2 right-2 media-view-btn'>
 											<MyTooltip title='Open video in full screen'>
-											<button
+												<button
 													className='p-2 bg-opacity-50 rounded-full bg-neutral-500 hover:bg-opacity-100'
-													onClick={() => handleSetOpenFileView(true)
+													onClick={() =>
+														handleSetOpenFileView(
+															message.mediaUrl!
+														)
 													}
 												>
 													<IconBase className='font-semibold text-white'>
@@ -244,32 +263,63 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 											</MyTooltip>
 										</div>
 
-										<VideoPlayer src={message.mediaUrl!} />
+										<VideoPlayer
+											videoStyle='max-h-[420px]'
+											src={message.mediaUrl!}
+										/>
 									</div>
 								</MyTooltip>
 							)}
 
 							{/* message actions */}
 
-							<div className='flex flex-col items-center justify-center flex-shrink-0 invisible message-actions'>
+							<div className='flex flex-col items-center justify-center flex-shrink-0 invisible message-actions '>
 								<ul
 									className={clsx(
 										'flex gap-1',
 										isUser && 'flex-row-reverse'
 									)}
 								>
-									<MyTooltip title='Open reaction'>
-										<Button
-											className='flex items-center justify-center bg-neutral-100'
-											type='text'
-											shape='circle'
-											icon={
-												<span className='text-xl text-neutral-400'>
-													<PiSmileyFill />
+									<Popover
+										content={
+											<div className={`flex items-center justify-center gap-[6px] px-2 py-1 text-2xl rounded-3xl ${theme.popupBgColor} bg-opacity-90 backdrop-blur-[2px]`}>
+												{emojiList.map(
+													(emoji, index) => (
+														<span key={index} className='transition-transform hover:scale-125'>
+															{emoji}
+														</span>
+													)
+												)}
+												<span className='flex items-center justify-center p-[6px] rounded-full bg-neutral-300 hover:scale-125 transition-transform'>
+													<IconBase className='text-sm aspect-square'>
+														<AiOutlinePlus />
+													</IconBase>
 												</span>
-											}
-										></Button>
-									</MyTooltip>
+											</div>
+										}
+										trigger='click'
+										open={isOpenReaction}
+										overlayInnerStyle={{backgroundColor: 'transparent'}}
+										overlayClassName='rounded-3xl overflow-hidden shadow-xl bg-transparent'
+										arrow={false}
+										onOpenChange={handleOpenReaction}
+									>
+										<MyTooltip title='Open reaction'>
+											<Button
+												className='flex items-center justify-center bg-neutral-100'
+												type='text'
+												shape='circle'
+												onClick={() =>
+													handleOpenReaction(true)
+												}
+												icon={
+													<span className='text-xl text-neutral-400'>
+														<PiSmileyFill />
+													</span>
+												}
+											></Button>
+										</MyTooltip>
+									</Popover>
 									<MyTooltip title='Reply'>
 										<Button
 											className='flex items-center justify-center bg-neutral-100'
@@ -297,7 +347,6 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessagePropsType>(
 						)}
 					</div>
 				</div>
-
 			</>
 		);
 	}

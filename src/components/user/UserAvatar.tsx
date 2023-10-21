@@ -39,7 +39,7 @@ const UserAvatar: React.FC<UserAvatarPropsType> = ({
 			{online && (
 				<span className={badgeStyle} />
 			)}
-			{timeSinceLastOnline && !online && (parseTimeDifferencefromMs(timeSinceLastOnline) !== null) && (
+			{timeSinceLastOnline && !online && !isNaN(timeSinceLastOnline) && (
 				<span className=' text-green-400 font-bold text-center absolute bottom-0 py-[1px] leading-3 text-xs w-fit px-1.5 transform bg-green-200 border-[3px] border-white rounded-full -right-1 translate-y-1/4 dark:border-gray-800'>
 					{parseTimeDifferencefromMs(timeSinceLastOnline)}
 				</span>

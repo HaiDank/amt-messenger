@@ -1,28 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
 import IconButton from '../../IconButton';
 import { BiSolidSquare } from 'react-icons/bi';
-import { BsFillPlayFill, BsFillVolumeDownFill, BsFillVolumeMuteFill } from 'react-icons/bs';
+import {
+	BsFillPlayFill,
+	BsFillVolumeDownFill,
+	BsFillVolumeMuteFill,
+} from 'react-icons/bs';
 import useThrottle from '../../../hooks/useThrottle';
 import './video-player.css';
 import { Tooltip } from 'flowbite-react';
+import MyTooltip from '../../MyTooltip';
 
 type props = {
 	src: string;
+	videoStyle?: string;
 };
 
-const VideoPlayer: React.FC<props> = ({ src }) => {
+const VideoPlayer: React.FC<props> = ({ src, videoStyle }) => {
 	// state
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [volume, setVolume] = useState(0.1);
 	const [lastVolume, setLastVolume] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const [remainingTime, setRemainingTime] = useState(0);
+	// const [maxHeight, setMaxHeight] = useState('100%');
 
 	// ref
 	const videoPlayer = useRef<HTMLVideoElement | null>(null);
 	const progressBar = useRef<HTMLInputElement | null>(null);
 	const volumeBar = useRef<HTMLInputElement | null>(null);
 	const animationRef = useRef<number | null>(null);
+	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		const videoEl = videoPlayer.current;
@@ -48,6 +56,16 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 			videoEl.removeEventListener('loadedmetadata', handleMetadataLoad);
 		};
 	}, [videoPlayer.current?.readyState]);
+
+	// useEffect(()=>{
+	// 	if(containerRef.current && videoPlayer.current) {
+	// 		setMaxHeight(`${containerRef.current.clientHeight}px`)
+
+	// 		videoPlayer.current.style.maxHeight = '100%'
+	// 	}
+
+		
+	// },[containerRef.current?.clientHeight])
 
 	// func
 
@@ -83,11 +101,9 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 	};
 
 	const toggleMuteVolume = () => {
-
-			changeVolume(lastVolume)
-			setLastVolume(volume)
-		
-	}
+		changeVolume(lastVolume);
+		setLastVolume(volume);
+	};
 
 	const whilePlaying = () => {
 		if (
@@ -157,11 +173,14 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 	};
 
 	return (
-		<div className='relative flex items-center justify-center function-container'>
+		<div
+			ref={containerRef}
+			className='relative flex items-center justify-center w-full h-full max-h-full function-container'
+		>
 			<video
 				ref={videoPlayer}
 				src={src}
-				className='w-full h-full max-h-[512px]'
+				className={`object-contain aspect-auto ${videoStyle} object-center `}
 				preload='metadata'
 				onClick={togglePlayPause}
 			/>
@@ -175,10 +194,10 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 			)}
 
 			{/* function bar */}
-			<div className='absolute z-10 w-full px-6 transition-opacity bottom-4 function-bar'>
+			<div className='absolute z-10 w-full max-w-lg px-6 text-white transition-opacity bottom-4 function-bar'>
 				<div className='relative z-10 flex items-center justify-center gap-3 p-1'>
 					{/* play button */}
-					<div className='absolute -z-[1] w-full h-full bg-neutral-900 opacity-30 left-0 top-0'/>
+					<div className='absolute -z-[1] w-full h-full bg-neutral-900 opacity-30 left-0 top-0' />
 
 					<IconButton
 						tooltipTitle='Play Video'
@@ -218,10 +237,12 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 					{/* volume button */}
 
 					<Tooltip
-						className='p-0 -rotate-90 translate-x-[5px] -translate-y-9 bg-transparent'
+						className='flex items-center justify-center w-2 h-20 p-2 -rotate-90 bg-transparent '
 						arrow={false}
+						placement='top'
+						trigger='hover'
 						content={
-							<div className='flex items-center justify-center'>
+							<div className='flex items-center justify-center '>
 								<input
 									ref={volumeBar}
 									className='w-20 bg-transparent volume-range'
@@ -235,15 +256,18 @@ const VideoPlayer: React.FC<props> = ({ src }) => {
 							</div>
 						}
 					>
-						<div
-							onClick={toggleMuteVolume}
-							className='relative flex items-center justify-center w-6 text-2xl text-white aspect-square'
-						>
-							{
-								volume === 0 ? <BsFillVolumeMuteFill/> : <BsFillVolumeDownFill />
-							}
-							
-						</div>
+						<MyTooltip title='Mute Video'>
+							<div
+								onClick={toggleMuteVolume}
+								className='relative flex items-center justify-center w-6 text-2xl text-white aspect-square'
+							>
+								{volume === 0 ? (
+									<BsFillVolumeMuteFill />
+								) : (
+									<BsFillVolumeDownFill />
+								)}
+							</div>
+						</MyTooltip>
 					</Tooltip>
 				</div>
 			</div>

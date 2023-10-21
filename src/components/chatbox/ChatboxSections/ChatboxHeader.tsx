@@ -38,13 +38,15 @@ const ChatboxHeader: React.FC = () => {
 				title={chosenChatbox.otherUser?.name!}
 				icon={
 					<UserAvatar
-						online
+					
+					timeSinceLastOnline={chosenChatbox.otherUser?.timeLastOnline}
+						online={chosenChatbox.otherUser?.online}
 						size={36}
 						src={chosenChatbox.otherUser?.avatarUrl!}
 					/>
-				}
+				}	
 				description={
-					!chosenChatbox.otherUser?.timeLastOnline
+					chosenChatbox.otherUser?.timeLastOnline
 						? `Active ${parseTimeDifferencefromMs(
 								chosenChatbox.otherUser?.timeLastOnline
 						  )} ago`

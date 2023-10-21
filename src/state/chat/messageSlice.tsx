@@ -1,5 +1,4 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
 import {
 	Timestamp,
 	addDoc,
@@ -21,7 +20,7 @@ export type MessageType = {
 	isUnsent: boolean | null;
 	isDevided: boolean | null;
 	isTimeStamped: boolean | null;
-	chatBorderOrder: number | null;
+	chatBorderOrder: number;
 	messageId: string;
 };
 
@@ -68,32 +67,32 @@ export const postMessage = createAsyncThunk(
 	}
 );
 
-export const updateChatBubbleOrderAPI = createAsyncThunk(
-	'updateChatBubbleOrderAPI',
-	async (
-		args: { order: number; messageId: string; index: number },
-		thunkAPI
-	) => {
-		try {
-			const { order, messageId, index } = args;
-			const { dispatch, getState } = thunkAPI;
-			const state = getState() as RootState;
-			const messageRef = doc(
-				db,
-				`chat-box/${state.messages.chosenChatbox?.chatboxId}/messages`,
-				messageId
-			);
+// const updateChatBubbleOrderAPI = createAsyncThunk(
+// 	'updateChatBubbleOrderAPI',
+// 	async (
+// 		args: { order: number; messageId: string; index: number },
+// 		thunkAPI
+// 	) => {
+// 		try {
+// 			const { order, messageId, index } = args;
+// 			const { dispatch, getState } = thunkAPI;
+// 			const state = getState() as RootState;
+// 			const messageRef = doc(
+// 				db,
+// 				`chat-box/${state.messages.chosenChatbox?.chatboxId}/messages`,
+// 				messageId
+// 			);
 
-			updateDoc(messageRef, {
-				chatBorderOrder: order,
-			});
+// 			updateDoc(messageRef, {
+// 				chatBorderOrder: order,
+// 			});
 
-			dispatch(updateChatBubbleOrder({ index, order }));
-		} catch (error) {
-			console.log(error);
-		}
-	}
-);
+// 			dispatch(updateChatBubbleOrder({ index, order }));
+// 		} catch (error) {
+// 			console.log(error);
+// 		}
+// 	}
+// );
 
 
 
@@ -110,12 +109,12 @@ const messageSlice = createSlice({
 	
 		updateChatBubbleOrder: (
 			state,
-			action: PayloadAction<{ index: number; order: number }>
+			action: PayloadAction<{ index: number; order: number}>
 		) => {
 			const { index, order } = action.payload;
 			state.messages[index].chatBorderOrder = order;
 		},
-		setChosenChatbox: (state, action: PayloadAction<ChatboxType>) => {
+		setChosenChatbox: (state, action: PayloadAction<ChatboxType | null>) => {
 			state.chosenChatbox = action.payload
 
 		},

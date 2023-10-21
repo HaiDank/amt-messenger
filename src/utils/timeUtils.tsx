@@ -33,7 +33,7 @@ export function parseTimeDifferencefromMs(duration: number | undefined){
 		const difference = moment.duration(now.diff(past));
 
 		if (difference.days() > 0) {
-			return null;
+			return difference.days() + 'd';
 		} 
 		if(difference.hours() > 0) {
 			return difference.hours() + 'h'

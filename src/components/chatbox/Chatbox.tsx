@@ -6,7 +6,6 @@ import ChatboxContent from './ChatboxSections/ChatboxContent';
 import {
 	MessageType,
 	postMessage,
-	updateChatBubbleOrderAPI,
 } from '../../state/chat/messageSlice';
 import { BiSolidPlusCircle, BiSolidSend } from 'react-icons/bi';
 import IconButton from '../IconButton';
@@ -57,36 +56,36 @@ const Chatbox: React.FC = () => {
 	const submitOneFile = async (file: { file: File; preview: string }) => {
 		if (file) {
 			const timeSent = Date.now();
-			let isDevided = null;
-			let isTimeStamped = null;
-			let chatBorderOrder = null;
-			const lastMessage = messages[0];
-			if (lastMessage.createdAt <= timeSent - 90000) {
-				isDevided = true;
+			// let isDevided = null;
+			// let isTimeStamped = null;
+			// let chatBorderOrder = null;
+			// const lastMessage = messages[0];
+			// if (lastMessage.createdAt <= timeSent - 90000) {
+			// 	isDevided = true;
 
-				if (lastMessage.createdAt <= timeSent - 900000) {
-					isTimeStamped = true;
-				}
-			} else if (lastMessage.uid === user.uid) {
-				chatBorderOrder = 3;
+			// 	if (lastMessage.createdAt <= timeSent - 900000) {
+			// 		isTimeStamped = true;
+			// 	}
+			// } else if (lastMessage.uid === user.uid) {
+			// 	chatBorderOrder = 3;
 
-				if (lastMessage.chatBorderOrder) {
-					const args = {
-						order: 2,
-						messageId: lastMessage.messageId,
-						index: messages.length - 1,
-					};
-					dispatch(updateChatBubbleOrderAPI(args));
-				} else {
-					const args = {
-						order: 1,
-						messageId: lastMessage.messageId,
-						index: messages.length - 1,
-					};
+			// 	if (lastMessage.chatBorderOrder) {
+			// 		const args = {
+			// 			order: 2,
+			// 			messageId: lastMessage.messageId,
+			// 			index: messages.length - 1,
+			// 		};
+			// 		dispatch(updateChatBubbleOrderAPI(args));
+			// 	} else {
+			// 		const args = {
+			// 			order: 1,
+			// 			messageId: lastMessage.messageId,
+			// 			index: messages.length - 1,
+			// 		};
 
-					dispatch(updateChatBubbleOrderAPI(args));
-				}
-			}
+			// 		dispatch(updateChatBubbleOrderAPI(args));
+			// 	}
+			// }
 			const fileRef = ref(
 				storage,
 				`chat-box-files/${chosenChatboxId}/${file.file.name}` + v4()
@@ -97,14 +96,14 @@ const Chatbox: React.FC = () => {
 			const downloadUrl = await getDownloadURL(snapshot.ref);
 			const newMessage = {
 				uid: user.uid,
-				isUnsent: null,
+				// isUnsent: null,
 				mediaType: file.file.type,
 				mediaUrl: downloadUrl,
-				reaction: null,
-				removeFromUID: null,
-				isDevided: isDevided,
-				chatBorderOrder: chatBorderOrder,
-				isTimeStamped: isTimeStamped,
+				// reaction: null,
+				// removeFromUID: null,
+				// isDevided: isDevided,
+				// chatBorderOrder: chatBorderOrder,
+				// isTimeStamped: isTimeStamped,
 			} as Omit<MessageType, 'messageId' | 'createdAt'>;
 			const args = {
 				message: newMessage,
@@ -128,47 +127,47 @@ const Chatbox: React.FC = () => {
 		if (formValue.trim().length > 0 && messages) {
 			const timeSent = Date.now();
 
-			let isDevided = null;
-			let isTimeStamped = null;
-			let chatBorderOrder = null;
-			const lastMessage = messages[0];
+			// let isDevided = null;
+			// let isTimeStamped = null;
+			// let chatBorderOrder = null;
+			// const lastMessage = messages[0];
 
-			if (lastMessage.createdAt <= timeSent - 60000) {
-				isDevided = true;
+			// if (lastMessage.createdAt <= timeSent - 60000) {
+			// 	isDevided = true;
 
-				if (lastMessage.createdAt <= timeSent - 600000) {
-					isTimeStamped = true;
-				}
-			} else if (lastMessage.uid === user.uid) {
-				chatBorderOrder = 3;
+			// 	if (lastMessage.createdAt <= timeSent - 600000) {
+			// 		isTimeStamped = true;
+			// 	}
+			// } else if (lastMessage.uid === user.uid) {
+			// 	chatBorderOrder = 3;
 
-				if (lastMessage.chatBorderOrder) {
-					const args = {
-						order: 2,
-						messageId: lastMessage.messageId,
-						index: messages.length - 1,
-					};
-					dispatch(updateChatBubbleOrderAPI(args));
-				} else {
-					const args = {
-						order: 1,
-						messageId: lastMessage.messageId,
-						index: messages.length - 1,
-					};
+			// 	if (lastMessage.chatBorderOrder) {
+			// 		const args = {
+			// 			order: 2,
+			// 			messageId: lastMessage.messageId,
+			// 			index: messages.length - 1,
+			// 		};
+			// 		dispatch(updateChatBubbleOrderAPI(args));
+			// 	} else {
+			// 		const args = {
+			// 			order: 1,
+			// 			messageId: lastMessage.messageId,
+			// 			index: messages.length - 1,
+			// 		};
 
-					dispatch(updateChatBubbleOrderAPI(args));
-				}
-			}
+			// 		dispatch(updateChatBubbleOrderAPI(args));
+			// 	}
+			// }
 
 			const newMessage = {
 				text: formValue,
 				uid: user.uid,
-				isUnsent: null,
-				reaction: null,
-				removeFromUID: null,
-				isDevided: isDevided,
-				isTimeStamped: isTimeStamped,
-				chatBorderOrder: chatBorderOrder,
+				// isUnsent: null,
+				// reaction: null,
+				// removeFromUID: null,
+				// isDevided: isDevided,
+				// isTimeStamped: isTimeStamped,
+				// chatBorderOrder: chatBorderOrder,
 			} as Omit<MessageType, 'messageId' | 'createdAt'>;
 			const args = {
 				message: newMessage,

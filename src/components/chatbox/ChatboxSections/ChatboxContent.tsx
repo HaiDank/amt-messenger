@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppRedux';
 import ChatMessage from './ChatMessage';
 import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
@@ -26,18 +26,17 @@ const ChatboxContent: React.FC = () => {
 		(state) => state.messages.chosenChatbox?.chatboxId!
 	);
 
-	const autoScrollElement = useRef<HTMLDivElement>(null);
-
 	// state
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [hasNext, setHasNext] = useState(true);
 	const [lastMessage, setLastMessage] = useState<DocumentData | null>(null);
 
-	
+	// ref
 	const messagesRef = collection(db, `chat-box/${chosenChatboxId}/messages`);
+	const autoScrollElement = useRef<HTMLDivElement>(null);
 
-	const fetchMessages = useCallback(() => {
+	const fetchMessages = () => {
 		setIsLoading(true);
 		const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(15));
 
@@ -58,9 +57,55 @@ const ChatboxContent: React.FC = () => {
 					messageSnapshot.docs[messageSnapshot.docs.length - 1]
 				);
 
-				console.log(lastMessage);
+				console.log(
+					'fetch message snap',
+					messageSnapshot.docs[messageSnapshot.docs.length - 1]
+				);
+
+				console.log('data', data);
 
 				if (data.length > 0) {
+					data[data.length - 1] = {
+						...data[data.length - 1],
+						isDevided: true,
+						isTimeStamped: true,
+						chatBorderOrder: 0,
+					};
+					for (let index = data.length - 1; index >= 0; index--) {
+						const message = data[index];
+
+						const timeSent = message.createdAt;
+						let isDevided = null;
+						let isTimeStamped = null;
+						let chatBorderOrder = 0;
+
+						if (index !== data.length - 1) {
+							const prevMessage = data[index + 1];
+
+							if (prevMessage.createdAt <= timeSent - 80000) {
+								isDevided = true;
+
+								if (
+									prevMessage.createdAt <=
+									timeSent - 900000
+								) {
+									isTimeStamped = true;
+								}
+							} else if (prevMessage.uid === message.uid) {
+								chatBorderOrder = 2;
+
+								prevMessage.chatBorderOrder += 1;
+							}
+
+							data[index] = {
+								...message,
+								isDevided: isDevided,
+								isTimeStamped: isTimeStamped,
+								chatBorderOrder: chatBorderOrder,
+							} as MessageType;
+						}
+					}
+
 					dispatch(loadMessages(data));
 				}
 			}
@@ -68,9 +113,9 @@ const ChatboxContent: React.FC = () => {
 		setIsLoading(false);
 
 		return unsubscribe;
-	}, []);
+	};
 
-	const fetchNextMessages = useCallback(() => {
+	const prevMessages = () => {
 		setIsLoading(true);
 
 		const q = query(
@@ -79,11 +124,8 @@ const ChatboxContent: React.FC = () => {
 			limit(15),
 			startAfter(lastMessage)
 		);
-		console.log('1233', lastMessage);
 
 		getDocs(q).then((messageSnapshot) => {
-			console.log('1233', messageSnapshot.empty);
-
 			if (!messageSnapshot.empty) {
 				let data: MessageType[] = [];
 
@@ -101,6 +143,47 @@ const ChatboxContent: React.FC = () => {
 				);
 
 				if (data.length > 0) {
+					data[data.length - 1] = {
+						...data[data.length - 1],
+						isDevided: true,
+						isTimeStamped: true,
+						chatBorderOrder: 0,
+					};
+					for (let index = data.length - 1; index >= 0; index--) {
+						const message = data[index];
+
+						const timeSent = message.createdAt;
+						let isDevided = null;
+						let isTimeStamped = null;
+						let chatBorderOrder = 0;
+
+						if (index !== data.length - 1) {
+							const prevMessage = data[index + 1];
+
+							if (prevMessage.createdAt <= timeSent - 80000) {
+								isDevided = true;
+
+								if (
+									prevMessage.createdAt <=
+									timeSent - 900000
+								) {
+									isTimeStamped = true;
+								}
+							} else if (prevMessage.uid === message.uid) {
+								chatBorderOrder = 2;
+
+								prevMessage.chatBorderOrder += 1;
+							}
+
+							data[index] = {
+								...message,
+								isDevided: isDevided,
+								isTimeStamped: isTimeStamped,
+								chatBorderOrder: chatBorderOrder,
+							} as MessageType;
+						}
+					}
+
 					dispatch(addMessages(data));
 				} else {
 					setHasNext(false);
@@ -109,29 +192,36 @@ const ChatboxContent: React.FC = () => {
 				if (messageSnapshot.docs.length < 15) {
 					setHasNext(false);
 				}
-				console.log('asdasdawdasd', data);
 			} else {
 				setHasNext(false);
 			}
 		});
 		setIsLoading(false);
-	}, [lastMessage]);
+	};
 
 	const lastMessageRef = useIntersectionObserver<HTMLDivElement>(() => {
 		if (!isLoading && hasNext && lastMessage) {
-			console.log('loadNextMessages');
-			fetchNextMessages();
+			console.log('prevMessages');
+			prevMessages();
 		}
 	}, [!isLoading, hasNext]);
 
 	useEffect(() => {
 		const unsubscribe = fetchMessages();
+
+
+		window.addEventListener('beforeunload', () => {
+			if (unsubscribe) {
+				unsubscribe();
+			}
+		});
+
 		return () => {
 			if (unsubscribe) {
 				unsubscribe();
 			}
 		};
-	}, [chosenChatboxId, dispatch]);
+	}, []);
 
 	useEffect(() => {
 		if (autoScrollElement.current) {
@@ -146,9 +236,8 @@ const ChatboxContent: React.FC = () => {
 			className={`relative flex flex-col-reverse flex-auto gap-[3px] px-4 pt-2 overflow-y-auto overflow-x-hidden scroll-smooth`}
 		>
 			{messages.map((message, index, messages) => (
-				<div>
+				<div key={index}>
 					<ChatMessage
-						key={index}
 						message={message}
 						ref={
 							index === messages.length - 1
@@ -158,7 +247,6 @@ const ChatboxContent: React.FC = () => {
 					/>
 				</div>
 			))}
-			
 		</section>
 	);
 };

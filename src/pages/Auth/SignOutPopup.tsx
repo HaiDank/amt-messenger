@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppRedux';
 import { mySignOut, updateUserStatus } from '../../state/userSlice';
 import { auth } from '../../config/firebase';
+import { addChatapp } from '../../state/chat/chatappSlice';
+import { loadMessages, setChosenChatbox } from '../../state/chat/messageSlice';
 
 type SignOutPopupPropsType = {
 	open: boolean;
@@ -34,6 +36,9 @@ const SignOutPopup: React.FC<SignOutPopupPropsType> = ({
 					console.log('User signed out');
 					dispatch(updateUserStatus());
 				console.log('usersignout', user)
+					dispatch(addChatapp([]));
+					dispatch(loadMessages([]))
+					dispatch(setChosenChatbox(null))
 
 					navigate('/login', {replace: true})
 				})

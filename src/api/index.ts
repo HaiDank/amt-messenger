@@ -8,7 +8,7 @@ import {
 	query,
 	where,
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db} from '../config/firebase';
 import { ChatboxType, addChatapp } from '../state/chat/chatappSlice';
 import { UserType } from '../state/userSlice';
 import { AppDispatch } from '../state/store';
@@ -52,7 +52,6 @@ export const fetchChatBoxes = (dispatch: AppDispatch, uid: string) => {
 				} as UserType;
 			}
 
-			console.log(user);
 			let chatbox = {
 				...docSnapshot.data(),
 				chatboxId: docSnapshot.id,
@@ -65,7 +64,6 @@ export const fetchChatBoxes = (dispatch: AppDispatch, uid: string) => {
 				},
 				otherUser: user,
 			} as ChatboxType;
-			console.log(chatbox);
 			data.push(chatbox);
 		}
 		dispatch(addChatapp(data));
@@ -103,3 +101,32 @@ export const fetchMessages = (
 	return unsubscribe;
 };
 
+// export const fetchFiles = async (
+// 	dispatch: AppDispatch,
+// 	chosenChatboxId: string
+// ) => {
+// 	const storageRef = ref(storage, 'chat-box-files/' + chosenChatboxId);
+
+// 	try {
+// 		const files: FileInfo[] = [];
+
+// 		const res = await list(storageRef, { maxResults: PAGE_SIZE });
+// 		for (let itemRef of res.items) {
+// 			const [url, metadata] = await Promise.all([
+// 				getDownloadURL(itemRef),
+// 				getMetadata(itemRef),
+// 			]);
+
+// 			files.push({
+// 				url: url,
+// 				name: metadata.name || '',
+// 				size: metadata.size,
+// 				uploadDate: metadata.timeCreated,
+// 			});
+// 		}
+
+// 		dispatch(addFiles(files))
+// 	} catch (error) {
+// 		console.log('error fetching files: ', error);
+// 	}
+// };
